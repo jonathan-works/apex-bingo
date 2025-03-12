@@ -4,9 +4,9 @@
         outlined
         v-model="model"
         use-input
-        :option-label="(empresa: EmpresaResponse) => empresa.pessoa?.nome"
+        :option-label="(vendedor: VendedorResponse) => vendedor.pessoa.nome"
         input-debounce="0"
-        label="Empresa"
+        label="Vendedor"
         :options="options"
         @filter="filterFn"
         v-bind="$attrs"
@@ -14,7 +14,7 @@
     <template v-slot:no-option>
       <q-item>
         <q-item-section class="text-grey">
-          Nenhum cliente encontrado
+          Nenhum vendedor encontrado
         </q-item-section>
       </q-item>
     </template>
@@ -22,21 +22,21 @@
 </template>
 
 <script setup lang="ts">
-import { EmpresaResponse } from 'src/model/empresa.interface';
+import { VendedorRequest, VendedorResponse } from 'src/model/vendedor.interface';
 import { computed, useAttrs } from 'vue'
 
 const attrs = useAttrs();
 
 const props = defineProps<{
-   modelValue: EmpresaResponse | null ,
+   modelValue: VendedorResponse | VendedorRequest | null ,
    items: any[],
    itemsFiltrados: any[]
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: EmpresaResponse | null ): void;
-  (e: 'update:items', value: EmpresaResponse[] ): void;
-  (e: 'update:itemsFiltrados', value: EmpresaResponse[] ): void;
+  (e: 'update:modelValue', value: VendedorResponse | VendedorRequest | null ): void;
+  (e: 'update:items', value: VendedorResponse[] ): void;
+  (e: 'update:itemsFiltrados', value: VendedorResponse[] ): void;
 }>();
 
 const model = computed({
@@ -59,7 +59,7 @@ async function filterFn (val: string, update: (callback: () => void) => void) {
 
   update(() => {
     const needle = val.toLowerCase();
-    options.value = props.items.filter((v: EmpresaResponse) => v.pessoa.nome.toLowerCase().includes(needle)) as EmpresaResponse[];
+    options.value = props.items.filter((v: VendedorResponse) => v.pessoa.nome.toLowerCase().includes(needle)) as VendedorResponse[];
   })
 }
 

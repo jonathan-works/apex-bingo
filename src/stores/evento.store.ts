@@ -38,8 +38,8 @@ export const useEventoStore = defineStore('evento', () => {
     async function carregarEmpresas() {
         try {
         loading.value = true
-        const { data } = await empresaService.listarEmpresas();
-        empresas.value = data.content
+        const data = await empresaService.listAll();
+        empresas.value = data
         } catch (error: unknown) {
         const err = error as AxiosError<ErrorApi>
         notify.notifyErrorResponseAPI(err?.response?.data)

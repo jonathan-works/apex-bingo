@@ -5,8 +5,12 @@ import useNotify from 'src/composable/UseNotify'
 import { ErrorApi } from 'src/model/error.interface'
 import { empresaService } from 'src/services/empresa.service'
 import { EmpresaResponse } from 'src/model/empresa.interface'
-import { GestaoCartelaResponse } from 'src/model/gestao-cartela.interfave'
+import { GestaoCartelaRequest, GestaoCartelaResponse } from 'src/model/gestao-cartela.interfave'
 import { gestaoCartelaService } from 'src/services/gestao-cartela.service'
+import { EventoResponse } from 'src/model/evento.interface'
+import { eventoService } from 'src/services/evento.service'
+import { VendedorResponse } from 'src/model/vendedor.interface'
+import { vendedorService } from 'src/services/vendedor.service'
 
 const notify = useNotify()
 
@@ -20,6 +24,10 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
     const gestaoCartelasPaginados = ref<GestaoCartelaResponse[]>([]);
     const empresas = ref<EmpresaResponse[]>([]);
     const empresasFiltradas = ref<EmpresaResponse[]>([]);
+    const eventos = ref<EventoResponse[]>([]);
+    const eventosFiltrados = ref<EventoResponse[]>([]);
+    const vendedores = ref<VendedorResponse[]>([]);
+    const vendedoresFiltrados = ref<VendedorResponse[]>([]);
     const loading = ref(false);
 
     async function getGestaoCarteiraPaginado(page: number = 1, rowsPerPage: number = 10, filter = null) {
@@ -35,11 +43,12 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
         loading.value = false
         }
     }
+
     async function carregarEmpresas() {
         try {
         loading.value = true
-        const { data } = await empresaService.listarEmpresas();
-        empresas.value = data.content
+        const data = await empresaService.listAll();
+        empresas.value = data
         } catch (error: unknown) {
         const err = error as AxiosError<ErrorApi>
         notify.notifyErrorResponseAPI(err?.response?.data)
@@ -48,7 +57,33 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
         }
     }
 
-    async function criarGestaoCarteira(gestaoCartela: GestaoCartelaResponse) {
+    async function carregarEventos() {
+        try {
+            loading.value = true
+            const data = await eventoService.listAll();
+            eventos.value = data
+        } catch (error: unknown) {
+        const err = error as AxiosError<ErrorApi>
+        notify.notifyErrorResponseAPI(err?.response?.data)
+        } finally {
+        loading.value = false
+        }
+    }
+
+    async function carregarVendedor() {
+        try {
+            loading.value = true
+            const data = await vendedorService.listAll();
+            vendedores.value = data
+        } catch (error: unknown) {
+        const err = error as AxiosError<ErrorApi>
+        notify.notifyErrorResponseAPI(err?.response?.data)
+        } finally {
+        loading.value = false
+        }
+    }
+
+    async function criarGestaoCarteira(gestaoCartela: GestaoCartelaRequest) {
         try {
         loading.value = true;
         await gestaoCartelaService.create(gestaoCartela);
@@ -63,7 +98,7 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
         }
     }
 
-    async function atualizarGestaoCarteira(gestaoCartela: GestaoCartelaResponse) {
+    async function atualizarGestaoCarteira(gestaoCartela: GestaoCartelaRequest) {
         try {
         loading.value = true;
         if (!gestaoCartela.codigo) {
@@ -100,12 +135,18 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
     }
 
     return {
+        eventos,
         loading,
         empresas,
         pagination,
+        vendedores,
         gestaoCartela,
+        carregarEventos,
+        carregarVendedor,
         carregarEmpresas,
+        eventosFiltrados,
         empresasFiltradas,
+        vendedoresFiltrados,
         criarGestaoCarteira,
         excluirGestaoCarteira,
         atualizarGestaoCarteira,

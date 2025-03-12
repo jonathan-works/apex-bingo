@@ -18,7 +18,12 @@
           <q-form @submit="onSubmit" class="q-pa-sm">
             <div class="row q-col-gutter-md">
               <div class="col-12">
-                <SelectEmpresa v-model="form.empresa as EmpresaResponse" :rules="[val => !!val || 'Empresa é obrigatório']"></SelectEmpresa>
+                <SelectEmpresa
+                  v-model:items-filtrados="eventoStore.empresasFiltradas"
+                  v-model:items="eventoStore.empresas"
+                  v-model="form.empresa" 
+                  :rules="[(val: any) => !!val || 'Empresa é obrigatória']"
+                  clearable />
               </div>
               <div class="col-12">
                 <q-input
@@ -79,12 +84,16 @@
   </template>
   
 <script setup lang="ts">
-import { defineEmits, defineProps, computed, ref, watch } from 'vue';
+import { defineEmits, defineProps, computed, ref, watch, onMounted } from 'vue';
 import { useEventoStore } from '../../stores/evento.store';
-import { EventoResponse } from 'src/model/response/evento.response';
 import SelectEmpresa from 'src/components/select/SelectEmpresa.vue';
+import { EventoResponse } from 'src/model/evento.interface';
   
 const eventoStore = useEventoStore();
+
+onMounted(() => {
+  eventoStore.carregarEmpresas();
+})
 
 const props = defineProps<{
     modelValue: boolean,
@@ -101,7 +110,7 @@ const form = ref<EventoResponse>({
     descricao: '',
     dataInicio: '',
     dataFinal: '',
-    empresa: null
+    empresa: undefined
 });
 
 const dtInicio = computed({
@@ -121,7 +130,7 @@ watch(() => props.evento, (newEvento) => {
             descricao: '',
             dataInicio: '',
             dataFinal: '',
-            empresa: null
+            empresa: undefined
         };
     }
 }, { immediate: true });

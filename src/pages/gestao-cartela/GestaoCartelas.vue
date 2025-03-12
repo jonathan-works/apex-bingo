@@ -1,178 +1,144 @@
 <template>
-  <q-page padding>
-      <div class="q-pa-md">
-        <TableCartelas />
-          <!-- <q-table
-              title="Clientes"
-              :rows="clienteStore.clientesPaginados"
-              :columns="columns"
-              row-key="codigo"
-              :loading="clienteStore.loading"
-              :pagination="clienteStore.pagination"
-              @request="onRequest"
-              :grid="$q.screen.lt.md || isGridView"
-          >
-              <template v-slot:top-right>
-                <div class="row items-center">
-                    <ButtonToggleView
-                    v-if="!$q.screen.lt.md"
-                    v-model:isGrid="isGridView"
-                    />
-                    <q-btn color="primary" label="Novo cliente" @click="openDialog()" class="q-ml-sm" />
+    <q-page padding>
+        <div class="q-pa-md">
+            <q-table
+                title="Gestão de Cartelas"
+                :rows="gestaoCartelaStore.gestaoCartelasPaginados"
+                :columns="columns"
+                row-key="codigo"
+                :loading="gestaoCartelaStore.loading"
+                :pagination="gestaoCartelaStore.pagination"
+                @request="onRequest"
+                :grid="$q.screen.lt.md || isGridView"
+            >
+                <template v-slot:top-right>
+                    <div class="row items-center">
+                        <ButtonToggleView
+                        v-if="!$q.screen.lt.md"
+                        v-model:isGrid="isGridView"
+                        />
+                        <q-btn color="primary" label="Nova Cartela" @click="openDialog()" class="q-ml-sm" />
+                    </div>
+                </template>
+
+                <template v-slot:item="props">
+                <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4" v-if="$q.screen.lt.md || isGridView">
+                    <q-card>
+                    <q-card-section>
+                        <div class="text-h6">{{ props.row.codigo }}</div>
+                        <div class="text-subtitle2">{{ props.row.descricao }}</div>
+                        <div class="text-subtitle2">{{ props.row?.evento?.descricao }}</div>
+                        <div class="text-subtitle2">{{ props.row?.empresa?.pessoa?.nome }}</div>
+                    </q-card-section>
+                    <q-separator />
+                    <q-card-actions align="center">
+                        <q-btn
+                        flat
+                        round
+                        color="primary"
+                        icon="edit"
+                        @click="editar(props.row)"
+                        >
+                        <q-tooltip>Editar</q-tooltip>
+                        </q-btn>
+                        <q-btn
+                        flat
+                        round
+                        color="negative"
+                        icon="delete"
+                        @click="confirmarExclusao(props.row)"
+                        >
+                        <q-tooltip>Excluir</q-tooltip>
+                        </q-btn>
+                    </q-card-actions>
+                    </q-card>
                 </div>
-              </template>
+                </template>
 
-              <template v-slot:item="props">
-              <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4" v-if="$q.screen.lt.md || isGridView">
-                  <q-card>
-                  <q-card-section>
-                      <div class="text-h6">{{ props.row.pessoa?.nome }}</div>
-                      <div class="text-subtitle2">{{ formatarDocumento(props.row.pessoa?.documento) }}</div>
-                      <div class="text-subtitle2">{{ props.row.pessoa?.email }}</div>
-                      <div class="text-subtitle2">{{ formatarTelefone(props.row.pessoa?.telefone) }}</div>
-                      <div class="text-subtitle2">{{ props.row?.empresa?.pessoa?.nome }}</div>
-                  </q-card-section>
-                  <q-separator />
-                  <q-card-actions align="center">
-                      <q-btn
-                      flat
-                      round
-                      color="primary"
-                      icon="edit"
-                      @click="editar(props.row)"
-                      >
-                      <q-tooltip>Editar</q-tooltip>
-                      </q-btn>
-                      <q-btn
-                      flat
-                      round
-                      color="negative"
-                      icon="delete"
-                      @click="confirmarExclusao(props.row)"
-                      >
-                      <q-tooltip>Excluir</q-tooltip>
-                      </q-btn>
-                  </q-card-actions>
-                  </q-card>
-              </div>
-              </template>
-
-              <template v-slot:body-cell-actions="props">
-              <q-td :props="props" class="q-gutter-sm">
-                  <q-btn
-                  flat
-                  round
-                  color="primary"
-                  icon="edit"
-                  @click="editar(props.row)"
-                  >
-                  <q-tooltip>Editar</q-tooltip>
-                  </q-btn>
-                  <q-btn
-                  flat
-                  round
-                  color="negative"
-                  icon="delete"
-                  @click="confirmarExclusao(props.row)"
-                  >
-                  <q-tooltip>Excluir</q-tooltip>
-                  </q-btn>
-              </q-td>
-              </template>
-          </q-table> -->
-      </div>
-      <!-- <ClienteDialog
-          v-model="showDialog"
-          :cliente="clienteStore.cliente as ClienteResponse"
-      /> -->
-      <q-btn color="primary" label="Nova gestão de cartelas" @click="openDialog()" class="q-ml-sm" />
-      <GestaoCartelasDialog
-          v-model="showDialog"
-      />
-  </q-page>
+                <template v-slot:body-cell-actions="props">
+                <q-td :props="props" class="q-gutter-sm">
+                    <q-btn
+                    flat
+                    round
+                    color="primary"
+                    icon="edit"
+                    @click="editar(props.row)"
+                    >
+                    <q-tooltip>Editar</q-tooltip>
+                    </q-btn>
+                    <q-btn
+                    flat
+                    round
+                    color="negative"
+                    icon="delete"
+                    @click="confirmarExclusao(props.row)"
+                    >
+                    <q-tooltip>Excluir</q-tooltip>
+                    </q-btn>
+                </q-td>
+                </template>
+            </q-table>
+        </div>
+        <GestaoCartelasDialog
+            v-model="showDialog"
+            :gestao-cartela="gestaoCartelaStore.gestaoCartela"
+        />
+    </q-page>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
-import { useClienteStore } from 'src/stores/cliente.store';
-import ButtonToggleView from 'src/components/button/ButtonToggleView.vue';
-import { ClienteResponse } from 'src/model/cliente.interface';
-import ClienteDialog from './ClienteDialog.vue';
-import { formatarDocumento, formatarTelefone } from 'src/utils/format';
-import TableCartelas from 'src/components/table/TableCartelas.vue';
 import { useGestaoCartelaStore } from 'src/stores/gestao-cartela.store';
+import ButtonToggleView from 'src/components/button/ButtonToggleView.vue';
+import { GestaoCartelaResponse } from 'src/model/gestao-cartela.interfave';
 import GestaoCartelasDialog from './GestaoCartelasDialog.vue';
 
 const $q = useQuasar();
-// const gestaoCartelaStore = useGestaoCartelaStore();
-// gestaoCartelaStore.getGestaoCarteiraPaginado();
-
-
-
+const gestaoCartelaStore = useGestaoCartelaStore();
 const isGridView = ref(false);
 const showDialog = ref(false);
 const filter = ref(null);
 
-const columns = [
-    {
-      name: 'codigo',
-      field: 'codigo',
-      label: 'Código',
-      align: 'left',
-      sortable: true
-    },
-    {
-      name: 'nome',
-      field: (row : ClienteResponse) => row.pessoa.nome,
-      label: 'Nome',
-      align: 'left',
-      sortable: true
-    },
-    {
-      name: 'documento',
-      field: (row : ClienteResponse) => formatarDocumento(row.pessoa.documento),
-      label: 'Documento',
-      align: 'left'
-    },
-    {
-      name: 'email',
-      field: (row : ClienteResponse) => row.pessoa.email,
-      label: 'Email',
-      align: 'left'
-    },
-    {
-      name: 'telefone',
-      field: (row : ClienteResponse) => formatarTelefone(row.pessoa.telefone),
-      label: 'Telefone',
-      align: 'left'
-    },
-    {
-      name: 'actions',
-      label: 'Ações',
-      field: 'actions',
-      align: 'center'
-    }
-  ]
+interface Column {
+  name: string;
+  required?: boolean;
+  label: string;
+  align?: 'left' | 'right' | 'center';
+  field: string | ((row: GestaoCartelaResponse) => any);
+  sortable?: boolean;
+}
+
+const columns: Column[] = [
+    { name: 'codigo', required: true, label: 'Código', align: 'left', field: 'codigo', sortable: true },
+    { name: 'descricao', required: true, label: 'Descrição', align: 'left', field: 'descricao', sortable: true },
+    { name: 'evento', label: 'Evento', field: (row: GestaoCartelaResponse) => row.evento?.descricao, sortable: true },
+    { name: 'empresa', label: 'Empresa', field: (row: GestaoCartelaResponse) => row.empresa?.pessoa?.nome, sortable: true },
+    { name: 'actions', label: 'Ações', field: 'actions', sortable: false }
+];
+
+onMounted(async () => {
+  await gestaoCartelaStore.getGestaoCarteiraPaginado();
+});
 
 async function onRequest(props: any) {
   const { page, rowsPerPage } = props.pagination;
-  await gestaoCartelaStore.getClientesPaginado(page, rowsPerPage, filter.value);
+  await gestaoCartelaStore.getGestaoCarteiraPaginado(page, rowsPerPage, filter.value);
 }
 
-function openDialog(cliente?: ClienteResponse) {
-  gestaoCartelaStore.cliente = cliente ? { ...cliente } : null;
+function openDialog(gestaoCartela?: GestaoCartelaResponse) {
+  gestaoCartelaStore.gestaoCartela = gestaoCartela ? { ...gestaoCartela } : null;
   showDialog.value = true;
 }
 
-function editar(cliente: ClienteResponse) {
-  openDialog(cliente);
+function editar(gestaoCartela: GestaoCartelaResponse) {
+  openDialog(gestaoCartela);
 }
 
-function confirmarExclusao(cliente: ClienteResponse) {
+function confirmarExclusao(gestaoCartela: GestaoCartelaResponse) {
   $q.dialog({
     title: 'Confirmar exclusão',
-    message: `Deseja realmente excluir o cliente ${cliente?.pessoa?.nome}?`,
+    message: `Deseja realmente excluir a cartela ${gestaoCartela?.descricao}?`,
     cancel: {
       label: 'Cancelar',
       flat: true,
@@ -185,11 +151,15 @@ function confirmarExclusao(cliente: ClienteResponse) {
     persistent: true
   }).onOk(async () => {
     try {
-      await gestaoCartelaStore.excluirGestaoCarteira(cliente.codigo);
-      await gestaoCartelaStore.getGestaoCarteiraPaginado(gestaoCartelaStore.pagination.page, gestaoCartelaStore.pagination.rowsPerPage, filter.value);
+      await gestaoCartelaStore.excluirGestaoCarteira(Number(gestaoCartela.codigo));
+      await gestaoCartelaStore.getGestaoCarteiraPaginado(
+        gestaoCartelaStore.pagination.page, 
+        gestaoCartelaStore.pagination.rowsPerPage, 
+        filter.value
+      );
     } catch (error) {
+      // Erro já tratado no store
     }
   });
 }
 </script>
-  

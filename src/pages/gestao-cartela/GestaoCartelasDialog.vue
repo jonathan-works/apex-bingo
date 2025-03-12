@@ -1,199 +1,200 @@
 <template>
-  <q-dialog
-    :model-value="modelValue"
-    @update:model-value="emit('update:modelValue', $event)"
-    @hide="onHide"
-    persistent
-    transition-show="slide-up"
-    transition-hide="slide-down"
-  >
-    <q-card class="q-dialog-plugin" style="width: 700px; max-width: 80vw;">
-      <q-card-section class="row items-center q-pb-none q-px-lg">
-        <div class="text-h6">{{ isEdit ? 'Editar' : 'Novo' }} Cliente</div>
-        <q-space />
-        <q-btn icon="close" flat round dense v-close-popup />
-      </q-card-section>
-
-      <q-card-section>
-        <q-form @submit="onSubmit" class="q-pa-sm">
-          <div class="row q-col-gutter-md">
-            <div class="col-12 col-md-6">
-              <!-- <q-input
-                dense
-                outlined
-                v-model="form.pessoa.nome"
-                label="Nome *"
-                :rules="[val => !!val || 'Nome é obrigatório']"
-              /> -->
-            </div>
-
-            <!-- <div class="col-12 col-md-6">
-              <q-select
-                  dense
+    <q-dialog
+        :model-value="modelValue"
+        @update:model-value="emit('update:modelValue', $event)"
+        @hide="onHide"
+        persistent
+        transition-show="slide-up"
+        transition-hide="slide-down"
+    >
+      <q-card class="q-dialog-plugin" style="width: 700px; max-width: 80vw;">
+        <q-card-section class="row items-center q-pb-none q-px-lg">
+          <div class="text-h6">{{ isEdit ? 'Editar' : 'Nova' }} Cartela</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+  
+        <q-card-section>
+          <q-form @submit="onSubmit" class="q-pa-sm">
+            <div class="row q-col-gutter-md">
+              <div class="col-12">
+                <SelectVendedor
+                  label="Vendedor *"
+                  v-model:items-filtrados="gestaoCartelaStore.vendedoresFiltrados"
+                  v-model:items="gestaoCartelaStore.vendedores"
+                  v-model="form.vendedor as VendedorRequest" 
+                  :rules="[(val: any) => !!val || 'Vendedor é obrigatório']"
+                  clearable />
+              </div>
+              <div class="col-md-4 col-12">
+                <q-input
+                  v-model="form.numeroBloco"
+                  label="Número do bloco *"
+                  :rules="[
+                    val => !!val || 'Número do bloco é obrigatória',
+                    val => val.length >= 1 || 'Mínimo de 1 caracteres'
+                  ]"
+                  type="number"
                   outlined
-                  emit-value
-                  map-options
-                  v-model="form.pessoa.tipoPessoa"
-                  :options="tiposPessoa"
-                  label="Tipo de Pessoa *"
-                  :rules="[val => !!val || 'Tipo de Pessoa é obrigatório']"
-                  @update:model-value="onTipoPessoaUpdate"
-              />
-            </div>
-            <div class="col-12 col-md-6">
-              <q-input
-                dense
-                outlined
-                v-model="form.pessoa.documento"
-                :label="form.pessoa.tipoPessoa === TipoPessoa.FISICA ? 'CPF' : 'CNPJ'"
-                :mask="form.pessoa.tipoPessoa === TipoPessoa.FISICA ? '###.###.###-##' : '##.###.###/####-##'"
-                :rules="[
-                  val => !!val || `${form.pessoa.tipoPessoa === TipoPessoa.FISICA ? 'CPF' : 'CNPJ'} é obrigatório`,
-                  val => form.pessoa.tipoPessoa === TipoPessoa.FISICA ? DocumentValidator.validarCPF(val) : DocumentValidator.validarCNPJ(val) || (form.pessoa.tipoPessoa === TipoPessoa.FISICA as TipoPessoa ? 'CPF' : 'CNPJ') + 'não é valido',
-                ]"
-                unmasked-value
-              />
-            </div>
-            <div class="col-12 col-md-6">
-              <q-input
-                dense
-                outlined
-                v-model="form.pessoa.email"
-                label="Email *"
-                type="email"
-                :rules="[
-                  val => !!val || 'Email é obrigatório',
-                  val => val && val.includes('@') || 'Email inválido'
-                ]"
-              />
-            </div>
-            <div class="col-12 col-md-6">
-              <q-input
-              dense
-                outlined
-                v-model="form.pessoa.telefone"
-                label="Telefone"
-                mask="(##) #####-####"
-                unmasked-value
-              />
-            </div>
-            <div class="col-12 col-md-6">
-              <q-input
-                dense
-                outlined
-                v-model="dataNascimento"
-                label="Data de Nascimento"
-                type="date"
-              />
-            </div> -->
-          </div>
+                  dense
+                />
+              </div>
+              <div class="col-md-4 col-12">
+                <q-input
+                  v-model="form.numeroInicial"
+                  label="Número Inicial *"
+                  :rules="[
+                    val => !!val || 'Número Inícial é obrigatória',
+                    val => val.length >= 1 || 'Mínimo de 1 caracteres'
+                  ]"
+                  type="number"
+                  outlined
+                  dense
+                />
+              </div>
+              <div class="col-md-4 col-12">
+                <q-input
+                  v-model="form.numeroFinal"
+                  label="Número Final *"
+                  :rules="[
+                    val => !!val || 'Número Final é obrigatória',
+                    val => val.length >= 1 || 'Mínimo de 1 caracteres'
+                  ]"
+                  type="number"
+                  outlined
+                  dense
+                />
+              </div>
+              <div class="col-md-4 col-12">
+                <q-select
+                    dense
+                    outlined
+                    emit-value
+                    map-options
+                    v-model="form.ativo"
+                    :options="ativo"
+                    label="Ativo *"
+                    :rules="[val => !!val || 'Ativo é obrigatório']"
+                />
+              </div>
+              <div class="col-md-8 col-12">
+                <SelectEvento
+                  label="Evento *"
+                  v-model:items-filtrados="gestaoCartelaStore.eventosFiltrados"
+                  v-model:items="gestaoCartelaStore.eventos"
+                  v-model="form.evento as EventoResponse" 
+                  :rules="[(val: any) => !!val || 'Evento é obrigatório']"
+                  clearable />
+              </div>
 
-          <div class="row justify-end q-gutter-sm q-mt-md">
-            <q-btn
-              label="Cancelar"
-              color="negative"
-              v-close-popup
-              dense
-              flat
-            />
-            <q-btn
-              label="Salvar"
-              type="submit"
-              color="primary"
-              dense
-            />
-          </div>
-        </q-form>
-      </q-card-section>
-    </q-card>
-  </q-dialog>
+              <div class="col-12">
+                <q-input
+                  v-model="form.descricao"
+                  label="Descrição *"
+                  :rules="[
+                    val => !!val || 'Descrição é obrigatória',
+                    val => val.length >= 3 || 'Mínimo de 3 caracteres'
+                  ]"
+                  outlined
+                  dense
+                />
+              </div>
+            </div>
+  
+            <div class="row justify-end q-gutter-sm q-mt-md">
+              <q-btn
+                label="Cancelar"
+                color="negative"
+                flat
+                v-close-popup
+              />
+              <q-btn
+                :label="isEdit ? 'Salvar' : 'Criar'"
+                type="submit"
+                color="primary"
+              />
+            </div>
+          </q-form>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
 </template>
-
+  
 <script setup lang="ts">
-import { defineEmits, defineProps, computed, ref, watch } from 'vue';
-import { GestaoCartelaItemResponse, GestaoCartelaResponse } from 'src/model/gestao-cartela.interfave';
-
-import { EventoResponse } from 'src/model/evento.interface';
-import { VendedorResponse } from 'src/model/vendedor.interface';
+import { computed, ref, watch, onMounted } from 'vue';
 import { useGestaoCartelaStore } from 'src/stores/gestao-cartela.store';
+import SelectEvento from 'src/components/select/SelectEvento.vue';
+import { GestaoCartelaRequest } from 'src/model/gestao-cartela.interfave';
+import { StatusCartela } from 'src/model/status-cartela.enum';
+import { EventoResponse } from 'src/model/evento.interface';
+import { VendedorRequest } from 'src/model/vendedor.interface';
+import SelectVendedor from 'src/components/select/SelectVendedor.vue';
+
+interface Props {
+  modelValue: boolean;
+  gestaoCartela?: GestaoCartelaRequest | null;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  gestaoCartela: null
+});
+
+const emit = defineEmits<{
+  'update:modelValue': [value: boolean]
+}>();
+
 
 const gestaoCartelaStore = useGestaoCartelaStore();
 
-const props = defineProps<{
-  modelValue: boolean
-}>();
+onMounted(async () => {
+  await gestaoCartelaStore.carregarEventos();
+  await gestaoCartelaStore.carregarVendedor();
+});
 
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: boolean): void
-}>();
+const isEdit = computed(() => !!props.gestaoCartela?.codigo);
+const ativo = Object.keys(StatusCartela).map((key) => ({ label: StatusCartela[key as keyof typeof StatusCartela], value: key as string }));
 
-const showDialog = ref(false);
-const isEdit = computed(() => !!gestaoCartelaStore.gestaoCartela?.codigo);
-
-const form = ref<GestaoCartelaResponse>({
+const form = ref<GestaoCartelaRequest>({
   codigo: "",
-  vendedor: {} as VendedorResponse,
-  evento: {} as EventoResponse,
-  status: 'E',
-  dataCadastro: new Date(),
-  itens: [] as GestaoCartelaItemResponse[],
-  nomeUsuario: "",
-})
+  numeroBloco: undefined,
+  numeroInicial: undefined,
+  numeroFinal: undefined,
+  tipo: 'C',
+  evento: undefined,
+  vendedor: undefined
+});
 
-// const dataNascimento = computed({
-//   get: () => form.value.pessoa?.dataNascimento?.split('/').reverse().join('-'),
-//   set: (value: string) => (form.value.pessoa.dataNascimento = value.split('-').reverse().join('/'))
-// })
-
-const tiposPessoa = [
-  { label: 'Pessoa Física', value: 'FISICA' },
-  { label: 'Pessoa Jurídica', value: 'JURIDICA' }
-]
-
-watch(() => gestaoCartelaStore.gestaoCartela, (novo) => {
-  if (novo) {
-      form.value = { ...novo } as GestaoCartelaResponse;
+watch(() => props.gestaoCartela, (newCartela) => {
+  if (newCartela) {
+    form.value = { ...newCartela };
   } else {
-      form.value = {
-        codigo: "",
-        vendedor: {} as VendedorResponse,
-        evento: {} as EventoResponse,
-        status: 'E',
-        dataCadastro: new Date(),
-        itens: [] as GestaoCartelaItemResponse[],
-        nomeUsuario: "",
-      }
+    form.value = {
+      codigo: "",
+      numeroBloco: undefined,
+      numeroInicial: undefined,
+      numeroFinal: undefined,
+      tipo: 'C',
+      evento: undefined,
+      vendedor: undefined
+    };
   }
 }, { immediate: true });
 
 async function onSubmit() {
   try {
-      if (isEdit.value) {
-          await gestaoCartelaStore.atualizarGestaoCarteira(form.value);
-      } else {
-          await gestaoCartelaStore.criarGestaoCarteira(form.value);
-      }
-      emit('update:modelValue', false);
+    if (isEdit.value) {
+      await gestaoCartelaStore.atualizarGestaoCarteira(form.value);
+    } else {
+      await gestaoCartelaStore.criarGestaoCarteira(form.value);
+    }
+    emit('update:modelValue', false);
   } catch (error) {
+    // Erro já tratado no store
   }
 }
 
 function onHide() {
   emit('update:modelValue', false);
 }
-
-// function onTipoPessoaUpdate() {
-//     if(form.value?.pessoa?.documento){
-//         form.value.pessoa.documento = '';
-//     }
-// }
-
-function openDialog(gestaoCartela?: GestaoCartelaResponse) {
-  gestaoCartelaStore.gestaoCartela = gestaoCartela ? { ...gestaoCartela } : null;
-  showDialog.value = true;
-}
-
-function editar(gestaoCartela: GestaoCartelaResponse) {
-  openDialog(gestaoCartela);
-}
 </script>
+src/model/status-cartela.enum

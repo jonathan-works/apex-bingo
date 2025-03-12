@@ -6,6 +6,10 @@ export const eventoService = {
     return await useApi('/api/v1/eventos').list({ filter, page, size, order, coluna });
   },
 
+  async listAll(): Promise<EventoResponse[]> {
+    return await useApi('/api/v1/eventos/todos').list();
+  },
+
   async create(request: EventoRequest): Promise<EventoResponse> {
     return await useApi('/api/v1/eventos').post(request);
   },

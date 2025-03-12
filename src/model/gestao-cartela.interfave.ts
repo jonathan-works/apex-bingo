@@ -1,18 +1,30 @@
 import { CartelaRifaResponse } from "./cartela-rifa.interface";
-import { EventoResponse } from "./evento.interface";
+import { EventoRequest, EventoResponse } from "./evento.interface";
 import { PageResponse } from "./page.interface";
-import { VendedorResponse } from "./vendedor.interface";
+import { VendedorRequest } from "./vendedor.interface";
+import { EmpresaResponse } from "./empresa.interface";
 
+
+export interface GestaoCartelaRequest {
+    codigo: string;
+    numeroBloco: number | undefined;
+    numeroInicial: number | undefined;
+    numeroFinal: number | undefined;
+    tipo: 'C' | 'R';
+    evento: EventoRequest | undefined
+    vendedor: VendedorRequest | undefined
+}
 
 export interface GestaoCartelaResponse {
     codigo: string;
-    vendedor: VendedorResponse;
-    evento: EventoResponse;
-    status: 'E' | 'P' | 'F';
+    descricao: string;
+    empresa: EmpresaResponse | null;
+    evento: EventoResponse | null;
+    status: string;
     dataCadastro: Date;
-    itens: GestaoCartelaItemResponse[];
+    itens: any[];
+    vendedor: any | null;
     nomeUsuario: string;
-
 }
 
 export interface GestaoCartelaItemResponse{

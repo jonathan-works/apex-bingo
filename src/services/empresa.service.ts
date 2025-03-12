@@ -6,6 +6,10 @@ export const empresaService = {
     return await useApi('/api/v1/empresas').list({ filter, page, size, order, coluna });
   },
 
+  async listAll(): Promise<EmpresaResponse[]> {
+    return await useApi('/api/v1/empresas/todos').list();
+  },
+
   async create(request: EmpresaRequest): Promise<EmpresaResponse> {
     return await useApi('/api/v1/empresas').post(request);
   },

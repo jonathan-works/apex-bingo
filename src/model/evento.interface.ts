@@ -1,6 +1,5 @@
-import { EmpresaResponse } from './empresa.interface';
+import { EmpresaRequest, EmpresaResponse } from './empresa.interface';
 import { PageResponse } from './page.interface';
-import { EmpresaRequest } from './request/empresa.request';
 
 export interface EventoRequest {
   codigo?: number;
@@ -11,11 +10,11 @@ export interface EventoRequest {
 }
 
 export interface EventoResponse {
-  codigo: number;
+  codigo?: number;
   descricao: string;
   dataInicio: string;
   dataFinal: string;
-  empresa: EmpresaResponse;
+  empresa: EmpresaResponse | undefined;
   nomeUsuario?: string;
 }
 
