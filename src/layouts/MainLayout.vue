@@ -13,9 +13,9 @@
         <q-toolbar-title>
           <Logo/>
         </q-toolbar-title>
-        <q-toolbar-title>
+        <!-- <q-toolbar-title>
           {{authStore.tipoUser === 'CAIXA' ? 'Caixa' : 'BARBEIRO'}}
-        </q-toolbar-title>
+        </q-toolbar-title> -->
 
         <div>
           <q-btn
@@ -102,45 +102,68 @@ function handleLogout() {
 }
 
 const linksList: EssentialLinkProps[] = [
+  // {
+  //   title: 'Pedidos',
+  //   icon: 'storefront',
+  //   to: '/pedidos'
+  // },
+  // {
+  //   title: 'Usuários',
+  //   icon: 'group',
+  //   to: '/usuarios'
+  // },
+  // {
+  //   title: 'Serviços',
+  //   icon: 'room_service',
+  //   to: '/servicos'
+  // },
+  // {
+  //   title: 'Produtos',
+  //   icon: 'inventory_2',
+  //   to: '/produtos'
+  // },
+  // {
+  //   title: 'Condições de Pagamento',
+  //   icon: 'currency_exchange',
+  //   to: '/condicoes-pagamento'
+  // },
+  // {
+  //   title: 'Clientes',
+  //   icon: 'diversity_1',
+  //   to: '/clientes'
+  // },
+  // {
+  //   title: 'Empresas',
+  //   icon: 'business',
+  //   to: '/empresas'
+  // },
+  // {
+  //   title: 'Colaboradores',
+  //   icon: 'groups',
+  //   to: '/colaboradores'
+  // },
+
   {
-    title: 'Pedidos',
-    icon: 'storefront',
-    to: '/pedidos'
+    title: 'Gestão de Cartelas',
+    icon: 'groups',
+    to: '/gestao-cartelas'
   },
-  {
-    title: 'Usuários',
-    icon: 'group',
-    to: '/usuarios'
-  },
-  {
-    title: 'Serviços',
-    icon: 'room_service',
-    to: '/servicos'
-  },
-  {
-    title: 'Produtos',
-    icon: 'inventory_2',
-    to: '/produtos'
-  },
-  {
-    title: 'Condições de Pagamento',
-    icon: 'currency_exchange',
-    to: '/condicoes-pagamento'
-  },
+
   {
     title: 'Clientes',
     icon: 'diversity_1',
     to: '/clientes'
   },
   {
-    title: 'Empresas',
-    icon: 'business',
-    to: '/empresas'
+    title: 'Usuarios',
+    icon: 'group',
+    to: '/usuarios'
   },
+
   {
-    title: 'Colaboradores',
-    icon: 'groups',
-    to: '/colaboradores'
+    title: 'Eventos',
+    icon: 'event',
+    to: '/eventos'
   },
 ];
 </script>

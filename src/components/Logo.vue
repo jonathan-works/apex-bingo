@@ -1,10 +1,10 @@
 <template>
   <div>
     <div :style="{ fontSize: `${size || 1.9}em` }" class="font-bold">
-      <span class="text-secondary font-bold">APEX</span>Barber
+      <span class="text-secondary font-bold">APEX</span>Sorte
     </div>
     <div class="text-overline m--15">
-      Portal de Gestão de Barbearia
+      Portal de Gestão de Cartelas
     </div>
   </div>
 </template>

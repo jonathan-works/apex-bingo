@@ -1,3 +1,5 @@
+import { PageResponse } from "./page.interface";
+
 export enum TipoPessoa {
   FISICA = 'FISICA',
   JURIDICA = 'JURIDICA'
@@ -11,6 +13,7 @@ export interface PessoaRequest {
   dataNascimento?: string;
   email: string;
   telefone: string;
+  password: string;
 }
 
 export interface PessoaResponse {
@@ -22,3 +25,5 @@ export interface PessoaResponse {
   email: string;
   telefone: string;
 }
+
+export interface PagePessoaResponse extends PageResponse<PessoaResponse> {}

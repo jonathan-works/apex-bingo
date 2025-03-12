@@ -22,9 +22,11 @@
     "vue-router": "^4.0.12"
   },
   "devDependencies": {
+    "@electron/packager": "^18.3.6",
     "@quasar/app-vite": "^2.0.0",
     "@types/node": "^20.5.9",
     "autoprefixer": "^10.4.2",
+    "electron": "^35.0.0",
     "typescript": "~5.5.3"
   },
   "engines": {

@@ -18,16 +18,16 @@
         <q-form @submit="onSubmit" class="q-pa-sm">
           <div class="row q-col-gutter-md">
             <div class="col-12 col-md-6">
-              <q-input
+              <!-- <q-input
                 dense
                 outlined
                 v-model="form.pessoa.nome"
                 label="Nome *"
                 :rules="[val => !!val || 'Nome é obrigatório']"
-              />
+              /> -->
             </div>
 
-            <div class="col-12 col-md-6">
+            <!-- <div class="col-12 col-md-6">
               <q-select
                   dense
                   outlined
@@ -85,7 +85,7 @@
                 label="Data de Nascimento"
                 type="date"
               />
-            </div>
+            </div> -->
           </div>
 
           <div class="row justify-end q-gutter-sm q-mt-md">
@@ -111,72 +111,67 @@
 
 <script setup lang="ts">
 import { defineEmits, defineProps, computed, ref, watch } from 'vue';
-import { ClienteResponse } from 'src/model/cliente.interface';
-import { useClienteStore } from 'src/stores/cliente.store';
-import { TipoPessoa } from 'src/model/pessoa.interface';
-import { DocumentValidator } from 'src/utils/documentValidator';
+import { GestaoCartelaItemResponse, GestaoCartelaResponse } from 'src/model/gestao-cartela.interfave';
 
-const clienteStore = useClienteStore();
+import { EventoResponse } from 'src/model/evento.interface';
+import { VendedorResponse } from 'src/model/vendedor.interface';
+import { useGestaoCartelaStore } from 'src/stores/gestao-cartela.store';
+
+const gestaoCartelaStore = useGestaoCartelaStore();
 
 const props = defineProps<{
-  modelValue: boolean,
-  cliente?: ClienteResponse
+  modelValue: boolean
 }>();
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
 }>();
 
-const isEdit = computed(() => !!props.cliente?.codigo);
+const showDialog = ref(false);
+const isEdit = computed(() => !!gestaoCartelaStore.gestaoCartela?.codigo);
 
-const form = ref<ClienteResponse>({
-  codigo: undefined,
-  pessoa: {
-    codigo: undefined,
-    nome: '',
-    tipoPessoa: 'FISICA',
-    documento: '',
-    dataNascimento: '',
-    email: '',
-    telefone: ''
-  }
+const form = ref<GestaoCartelaResponse>({
+  codigo: "",
+  vendedor: {} as VendedorResponse,
+  evento: {} as EventoResponse,
+  status: 'E',
+  dataCadastro: new Date(),
+  itens: [] as GestaoCartelaItemResponse[],
+  nomeUsuario: "",
 })
 
-const dataNascimento = computed({
-  get: () => form.value.pessoa?.dataNascimento?.split('/').reverse().join('-'),
-  set: (value: string) => (form.value.pessoa.dataNascimento = value.split('-').reverse().join('/'))
-})
+// const dataNascimento = computed({
+//   get: () => form.value.pessoa?.dataNascimento?.split('/').reverse().join('-'),
+//   set: (value: string) => (form.value.pessoa.dataNascimento = value.split('-').reverse().join('/'))
+// })
 
 const tiposPessoa = [
   { label: 'Pessoa Física', value: 'FISICA' },
   { label: 'Pessoa Jurídica', value: 'JURIDICA' }
 ]
 
-watch(() => form.roles, (novo) => {
+watch(() => gestaoCartelaStore.gestaoCartela, (novo) => {
   if (novo) {
-      form.value = { ...novo } as ClienteResponse;
+      form.value = { ...novo } as GestaoCartelaResponse;
   } else {
       form.value = {
-        codigo: undefined,
-        pessoa: {
-          codigo: undefined,
-          nome: '',
-          tipoPessoa: 'FISICA',
-          documento: '',
-          dataNascimento: '',
-          email: '',
-          telefone: ''
-        }
-      };
+        codigo: "",
+        vendedor: {} as VendedorResponse,
+        evento: {} as EventoResponse,
+        status: 'E',
+        dataCadastro: new Date(),
+        itens: [] as GestaoCartelaItemResponse[],
+        nomeUsuario: "",
+      }
   }
 }, { immediate: true });
 
 async function onSubmit() {
   try {
       if (isEdit.value) {
-          await clienteStore.atualizarCliente(form.value);
+          await gestaoCartelaStore.atualizarGestaoCarteira(form.value);
       } else {
-          await clienteStore.criarCliente(form.value);
+          await gestaoCartelaStore.criarGestaoCarteira(form.value);
       }
       emit('update:modelValue', false);
   } catch (error) {
@@ -187,9 +182,18 @@ function onHide() {
   emit('update:modelValue', false);
 }
 
-function onTipoPessoaUpdate() {
-    if(form.value?.pessoa?.documento){
-        form.value.pessoa.documento = '';
-    }
+// function onTipoPessoaUpdate() {
+//     if(form.value?.pessoa?.documento){
+//         form.value.pessoa.documento = '';
+//     }
+// }
+
+function openDialog(gestaoCartela?: GestaoCartelaResponse) {
+  gestaoCartelaStore.gestaoCartela = gestaoCartela ? { ...gestaoCartela } : null;
+  showDialog.value = true;
+}
+
+function editar(gestaoCartela: GestaoCartelaResponse) {
+  openDialog(gestaoCartela);
 }
 </script>

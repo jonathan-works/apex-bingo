@@ -1,7 +1,8 @@
 <template>
   <q-page padding>
       <div class="q-pa-md">
-          <q-table
+        <TableCartelas />
+          <!-- <q-table
               title="Clientes"
               :rows="clienteStore.clientesPaginados"
               :columns="columns"
@@ -78,11 +79,15 @@
                   </q-btn>
               </q-td>
               </template>
-          </q-table>
+          </q-table> -->
       </div>
-      <ClienteDialog
+      <!-- <ClienteDialog
           v-model="showDialog"
           :cliente="clienteStore.cliente as ClienteResponse"
+      /> -->
+      <q-btn color="primary" label="Nova gestão de cartelas" @click="openDialog()" class="q-ml-sm" />
+      <GestaoCartelasDialog
+          v-model="showDialog"
       />
   </q-page>
 </template>
@@ -95,10 +100,15 @@ import ButtonToggleView from 'src/components/button/ButtonToggleView.vue';
 import { ClienteResponse } from 'src/model/cliente.interface';
 import ClienteDialog from './ClienteDialog.vue';
 import { formatarDocumento, formatarTelefone } from 'src/utils/format';
+import TableCartelas from 'src/components/table/TableCartelas.vue';
+import { useGestaoCartelaStore } from 'src/stores/gestao-cartela.store';
+import GestaoCartelasDialog from './GestaoCartelasDialog.vue';
 
 const $q = useQuasar();
-const clienteStore = useClienteStore();
-clienteStore.getClientesPaginado();
+// const gestaoCartelaStore = useGestaoCartelaStore();
+// gestaoCartelaStore.getGestaoCarteiraPaginado();
+
+
 
 const isGridView = ref(false);
 const showDialog = ref(false);
@@ -147,11 +157,11 @@ const columns = [
 
 async function onRequest(props: any) {
   const { page, rowsPerPage } = props.pagination;
-  await clienteStore.getClientesPaginado(page, rowsPerPage, filter.value);
+  await gestaoCartelaStore.getClientesPaginado(page, rowsPerPage, filter.value);
 }
 
 function openDialog(cliente?: ClienteResponse) {
-  clienteStore.cliente = cliente ? { ...cliente } : null;
+  gestaoCartelaStore.cliente = cliente ? { ...cliente } : null;
   showDialog.value = true;
 }
 
@@ -175,8 +185,8 @@ function confirmarExclusao(cliente: ClienteResponse) {
     persistent: true
   }).onOk(async () => {
     try {
-      await clienteStore.excluirEvento(cliente.codigo);
-      await clienteStore.getEventosPaginado(clienteStore.pagination.page, clienteStore.pagination.rowsPerPage, filter.value);
+      await gestaoCartelaStore.excluirGestaoCarteira(cliente.codigo);
+      await gestaoCartelaStore.getGestaoCarteiraPaginado(gestaoCartelaStore.pagination.page, gestaoCartelaStore.pagination.rowsPerPage, filter.value);
     } catch (error) {
     }
   });

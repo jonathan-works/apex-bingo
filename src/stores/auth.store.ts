@@ -1,10 +1,10 @@
+import { defineStore } from 'pinia';
 import { AxiosResponse } from 'axios';
-import { defineStore, acceptHMRUpdate } from 'pinia';
-import { AuthToken, AuthTokenGestor } from 'src/model/authToken.interface';
-import { ClienteConfigGestor } from 'src/model/clienteConfig.interface';
-import { authService } from 'src/service/auth.service';
-import { cryptoService } from 'src/service/crypto.service';
 import { jwtDecode} from "jwt-decode";
+import { authService } from 'src/services/auth.service';
+import { cryptoService } from 'src/services/crypto.service';
+import { ClienteConfigGestor } from 'src/model/clienteConfig.interface';
+import { AuthToken, AuthTokenGestor } from 'src/model/authToken.interface';
 
 const AUTH_TOKEN_KEY = 'auth_token';
 const CLIENT_CONFIG_KEY = 'client_config';

@@ -4,7 +4,7 @@ import { useAuthStore } from 'src/stores/auth.store';
 import { Router } from 'vue-router';
 
 const api = axios.create({
-  baseURL: 'https://apex-barbearia.2apex.com.br'
+  baseURL: 'https://apex-sort.2apex.com.br'
 });
 
 export default boot(({ router }) => {
@@ -35,10 +35,6 @@ export default boot(({ router }) => {
         router.push('/login');
       }
 
-      // if(!authStore.tokenValido() && error.response?.status === 401){
-      //   logout();
-      //   return Promise.reject(error);
-      // } else
       if (!authStore.tokenValido() && error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
 

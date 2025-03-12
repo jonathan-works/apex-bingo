@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { empresaService } from 'src/service/empresa.service'
+import { empresaService } from 'src/services/empresa.service'
 import { ref } from 'vue'
 import { Empresa } from 'src/model/empresa.interface'
 import { AxiosError } from 'axios'

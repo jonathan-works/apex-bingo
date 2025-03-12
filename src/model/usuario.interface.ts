@@ -1,43 +1,25 @@
-export interface Pessoa {
-  codigo?: number;
-  nome?: string;
-  tipoPessoa: 'FISICA' | 'JURIDICA';
-  documento?: string;
-  dataNascimento?: string;
-  email: string;
-  telefone?: string;
+import { PageResponse } from "./page.interface";
+import { Perfil } from "./perfil.enum";
+import { PessoaRequest, PessoaResponse } from "./pessoa.interface";
+import { RoleResponse } from "./role.interface";
+
+export interface UsuarioResponse{
+  codigo?: number,
+  pessoa: PessoaResponse,
+  roles: RoleResponse[]
 }
 
-export interface Usuario {
-  codigo?: number;
-  pessoa: Pessoa;
+export interface UsuarioRequest{
+  codigo?: number,
+  pessoa: PessoaRequest,
+  roles: RoleResponse[],
+  perfil: Perfil
+  password: string
 }
 
-export interface PageableObject {
-  unpaged: boolean;
-  paged: boolean;
-  pageNumber: number;
-  pageSize: number;
-  offset: number;
-  sort: SortObject;
+export interface UsuarioFilter{
+  nome?: string,
+  documento?: string,
 }
 
-export interface SortObject {
-  unsorted: boolean;
-  sorted: boolean;
-  empty: boolean;
-}
-
-export interface PageUsuarioResponse {
-  totalElements: number;
-  totalPages: number;
-  pageable: PageableObject;
-  numberOfElements: number;
-  size: number;
-  content: Usuario[];
-  number: number;
-  sort: SortObject;
-  first: boolean;
-  last: boolean;
-  empty: boolean;
-}
+export interface PageUsuarioResponse extends PageResponse<UsuarioResponse[]> {}
