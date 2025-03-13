@@ -17,6 +17,19 @@
           {{authStore.tipoUser === 'CAIXA' ? 'Caixa' : 'BARBEIRO'}}
         </q-toolbar-title> -->
 
+        <div v-if="true" class="flex justify-center items-center q-gutter-sm q-mx-sm">
+          <q-avatar color="positive" size="1.1em" /> 
+          <div>
+            ONLINE
+          </div>
+        </div>
+        <div v-else class="flex justify-center items-center q-gutter-sm q-mx-sm">
+          <q-avatar color="negative" size="1.1em" /> 
+          <div>
+            OFFLINE
+          </div>
+        </div>
+
         <div>
           <q-btn
             flat
