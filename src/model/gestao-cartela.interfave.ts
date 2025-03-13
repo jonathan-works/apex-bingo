@@ -1,8 +1,8 @@
-import { GestaoRifaResponse } from "src/model/cartela.interface";
 import { EventoRequest, EventoResponse } from "./evento.interface";
-import { PageResponse } from "./page.interface";
 import { VendedorRequest } from "./vendedor.interface";
 import { EmpresaResponse } from "./empresa.interface";
+import { CartelaResponse } from "./cartela.interface";
+import { PageResponse } from "./page.interface";
 
 
 export interface GestaoCartelaRequest {
@@ -30,7 +30,7 @@ export interface GestaoCartelaResponse {
 export interface GestaoCartelaItemResponse{
     codigo: string;
     numeroBloco: string;
-    cartelaRifa: GestaoRifaResponse;
+    cartelaRifa: CartelaResponse | null;
     tipo: 'C' | 'R'
 }
 

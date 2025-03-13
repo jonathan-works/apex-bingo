@@ -1,7 +1,7 @@
-import { PageResponse } from "./page.interface";
-import { Perfil } from "./perfil.enum";
 import { PessoaRequest, PessoaResponse } from "./pessoa.interface";
 import { RoleResponse } from "./role.interface";
+import { PageResponse } from "./page.interface";
+import { Perfil } from "./perfil.enum";
 
 export interface UsuarioResponse{
   codigo?: number,

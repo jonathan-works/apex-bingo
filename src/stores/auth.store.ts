@@ -63,7 +63,7 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     tokenValido(){
       const token = useAuthStore().token;
-      const decoded = jwtDecode(token);
+      const decoded = jwtDecode(token as string);
       const currentTime = Date.now() / 1000;
       return decoded.exp && decoded.exp > currentTime
     },
@@ -177,7 +177,7 @@ export const useAuthStore = defineStore('auth', {
 
     setTipo(tipo: 'BARBEIRO' | 'CAIXA') {
       if (this.authToken) {
-        this.authToken.tipo = tipo;
+        this.authToken.perfil = tipo;
         localStorage.setItem("tipoUser", tipo);
       }
     }

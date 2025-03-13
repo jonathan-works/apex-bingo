@@ -1,7 +1,7 @@
-import axios, { AxiosResponse } from "axios";
 import useApi from "src/composable/UseApi";
-import { AuthToken, AuthTokenGestor } from "src/model/auth-token.interface";
+import axios, { AxiosResponse } from "axios";
 import { ClienteConfigGestor } from "src/model/cliente-config.interface";
+import { AuthToken, AuthTokenGestor } from "src/model/auth-token.interface";
 
 export const authService = {
     async loginGestor(username: string, password: string): Promise<AxiosResponse<AuthTokenGestor>> {

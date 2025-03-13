@@ -10,9 +10,9 @@ const routes: RouteRecordRaw[] = [
       { name: 'eventos', path: 'eventos', component: () => import('pages/evento/Eventos.vue') },
       { name: 'clientes', path: 'clientes', component: () => import('pages/cliente/Clientes.vue') },
       { name: 'usuarios', path: 'usuarios', component: () => import('pages/usuario/Usuarios.vue') },
+      { name: 'cartelas', path: 'cartelas', component: () => import('pages/cartela/Cartelas.vue') },
       { name: 'vendedores', path: 'vendedores', component: () => import('pages/vendedor/Vendedores.vue') },
       { name: 'gestao-cartelas', path: 'gestao-cartelas', component: () => import('pages/gestao-cartela/GestaoCartelas.vue') },
-      { name: 'cartelas', path: 'cartelas', component: () => import('pages/cartela/Cartelas.vue') }
     ]
   },
   {
