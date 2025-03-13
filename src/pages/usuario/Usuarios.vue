@@ -7,7 +7,7 @@
                 :columns="columns"
                 row-key="codigo"
                 :loading="usuarioStore.loading"
-                :pagination="usuarioStore.pagination"
+                v-model:pagination="usuarioStore.pagination"
                 @request="onRequest"
                 :grid="$q.screen.lt.md || isGridView"
             >
@@ -146,8 +146,8 @@ import ButtonToggleView from 'src/components/button/ButtonToggleView.vue';
     ]
   
   async function onRequest(props: any) {
-    const { page, rowsPerPage } = props.pagination;
-    await usuarioStore.getClientesPaginado(page, rowsPerPage, filter.value);
+    usuarioStore.pagination = props.pagination;
+    await usuarioStore.getUsuariosPaginado();
   }
   
   function openDialog(usuario?: UsuarioResponse) {

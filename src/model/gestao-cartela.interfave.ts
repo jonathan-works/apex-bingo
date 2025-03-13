@@ -1,4 +1,4 @@
-import { GestaoRifaResponse } from "src/model/cartela-rifa.interface";
+import { GestaoRifaResponse } from "src/model/cartela.interface";
 import { EventoRequest, EventoResponse } from "./evento.interface";
 import { PageResponse } from "./page.interface";
 import { VendedorRequest } from "./vendedor.interface";
@@ -23,7 +23,7 @@ export interface GestaoCartelaResponse {
     status: string;
     dataCadastro: Date;
     itens: any[];
-    vendedor: any | null;
+    vendedor: VendedorRequest | null;
     nomeUsuario: string;
 }
 

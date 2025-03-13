@@ -29,11 +29,7 @@
               <div class="col-md-4 col-12">
                 <q-input
                   v-model="form.numeroBloco"
-                  label="Número do bloco *"
-                  :rules="[
-                    val => !!val || 'Número do bloco é obrigatória',
-                    val => val.length >= 1 || 'Mínimo de 1 caracteres'
-                  ]"
+                  label="Número do bloco"
                   type="number"
                   outlined
                   dense

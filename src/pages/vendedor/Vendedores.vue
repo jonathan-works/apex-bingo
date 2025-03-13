@@ -7,7 +7,7 @@
               :columns="columns"
               row-key="codigo"
               :loading="vendedorStore.loading"
-              :pagination="vendedorStore.pagination"
+              v-model:pagination="vendedorStore.pagination"
               @request="onRequest"
               :grid="$q.screen.lt.md || isGridView"
           >
@@ -146,8 +146,8 @@ const columns = [
   ]
 
 async function onRequest(props: any) {
-  const { page, rowsPerPage } = props.pagination;
-  await vendedorStore.getVendedoresPaginado(page, rowsPerPage, filter.value);
+  vendedorStore.pagination = props.pagination;
+  await vendedorStore.getVendedoresPaginado();
 }
 
 function openDialog(vendedor?: VendedorResponse) {

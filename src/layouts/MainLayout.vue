@@ -104,13 +104,13 @@ function handleLogout() {
 const linksList: EssentialLinkProps[] = [
   {
     title: 'Gestão de Cartelas',
-    icon: 'dataset',
+    icon: 'app_registration',
     to: '/gestao-cartelas'
   },
   {
-    title: 'Gestão de Rifa',
-    icon: 'app_registration',
-    to: '/gestao-rifas'
+    title: 'Cartelas',
+    icon: 'dataset',
+    to: '/cartelas'
   },
   {
     title: 'Clientes',

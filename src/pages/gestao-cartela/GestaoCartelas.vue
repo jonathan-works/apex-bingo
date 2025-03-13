@@ -7,7 +7,7 @@
                 :columns="columns"
                 row-key="codigo"
                 :loading="gestaoCartelaStore.loading"
-                :pagination="gestaoCartelaStore.pagination"
+                v-model:pagination="gestaoCartelaStore.pagination"
                 @request="onRequest"
                 :grid="$q.screen.lt.md || isGridView"
             >
@@ -25,10 +25,10 @@
                 <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4" v-if="$q.screen.lt.md || isGridView">
                     <q-card>
                     <q-card-section>
-                        <div class="text-h6">{{ props.row.codigo }}</div>
-                        <div class="text-subtitle2">{{ props.row.descricao }}</div>
-                        <div class="text-subtitle2">{{ props.row?.evento?.descricao }}</div>
-                        <div class="text-subtitle2">{{ props.row?.empresa?.pessoa?.nome }}</div>
+                        <div class="text-h6">{{ props.row?.evento?.descricao }}</div>
+                        <div class="text-subtitle2">Status: {{ StatusCartela[props.row?.status] }}</div>
+                        <div class="text-subtitle2">Vendedor: {{ props.row?.vendedor?.pessoa.nome }}</div>
+                        <div class="text-subtitle2">Descrição: {{ props.row.descricao }}</div>
                     </q-card-section>
                     <q-separator />
                     <q-card-actions align="center">
@@ -93,6 +93,7 @@ import { useGestaoCartelaStore } from 'src/stores/gestao-cartela.store';
 import ButtonToggleView from 'src/components/button/ButtonToggleView.vue';
 import { GestaoCartelaResponse } from 'src/model/gestao-cartela.interfave';
 import GestaoCartelasDialog from './GestaoCartelasDialog.vue';
+import { StatusCartela } from 'src/model/status-cartela.enum';
 
 const $q = useQuasar();
 const gestaoCartelaStore = useGestaoCartelaStore();
@@ -110,10 +111,12 @@ interface Column {
 }
 
 const columns: Column[] = [
-    { name: 'codigo', required: true, label: 'Código', align: 'left', field: 'codigo', sortable: true },
-    { name: 'descricao', required: true, label: 'Descrição', align: 'left', field: 'descricao', sortable: true },
+    // { name: 'codigo', required: true, label: 'Código', align: 'left', field: 'codigo', sortable: true },
+    { name: 'dataCadastro', required: true, label: 'Data de Cadastro', align: 'left', field: 'dataCadastro', sortable: true },
     { name: 'evento', label: 'Evento', field: (row: GestaoCartelaResponse) => row.evento?.descricao, sortable: true },
-    { name: 'empresa', label: 'Empresa', field: (row: GestaoCartelaResponse) => row.empresa?.pessoa?.nome, sortable: true },
+    { name: 'status', label: 'Status', align: 'center', field: (row: GestaoCartelaResponse) => StatusCartela[row.status as keyof typeof StatusCartela], sortable: true },
+    { name: 'vendedor', label: 'Vendedor', align: 'center', field: (row: GestaoCartelaResponse) => row.vendedor?.pessoa.nome, sortable: true },
+    { name: 'descricao', required: true, label: 'Descrição', align: 'left', field: 'descricao', sortable: true },
     { name: 'actions', label: 'Ações', field: 'actions', sortable: false }
 ];
 
@@ -122,8 +125,8 @@ onMounted(async () => {
 });
 
 async function onRequest(props: any) {
-  const { page, rowsPerPage } = props.pagination;
-  await gestaoCartelaStore.getGestaoCartelaPaginado(page, rowsPerPage, filter.value);
+  gestaoCartelaStore.pagination = props.pagination;
+  await gestaoCartelaStore.getGestaoCartelaPaginado();
 }
 
 function openDialog(gestaoCartela?: GestaoCartelaResponse) {
@@ -138,7 +141,7 @@ function editar(gestaoCartela: GestaoCartelaResponse) {
 function confirmarExclusao(gestaoCartela: GestaoCartelaResponse) {
   $q.dialog({
     title: 'Confirmar exclusão',
-    message: `Deseja realmente excluir a cartela ${gestaoCartela?.descricao}?`,
+    message: `Deseja realmente excluir a cartela do evento: ${gestaoCartela?.evento?.descricao}?`,
     cancel: {
       label: 'Cancelar',
       flat: true,

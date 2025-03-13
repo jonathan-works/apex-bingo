@@ -12,7 +12,7 @@ const routes: RouteRecordRaw[] = [
       { name: 'usuarios', path: 'usuarios', component: () => import('pages/usuario/Usuarios.vue') },
       { name: 'vendedores', path: 'vendedores', component: () => import('pages/vendedor/Vendedores.vue') },
       { name: 'gestao-cartelas', path: 'gestao-cartelas', component: () => import('pages/gestao-cartela/GestaoCartelas.vue') },
-      { name: 'gestao-rifa', path: 'gestao-rifas', component: () => import('pages/gestao-rifa/GestaoRifas.vue') }
+      { name: 'cartelas', path: 'cartelas', component: () => import('pages/cartela/Cartelas.vue') }
     ]
   },
   {

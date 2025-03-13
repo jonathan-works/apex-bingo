@@ -7,7 +7,7 @@
                 :columns="columns"
                 row-key="codigo"
                 :loading="eventoStore.loading"
-                :pagination="eventoStore.pagination"
+                v-model:pagination="eventoStore.pagination"
                 @request="onRequest"
                 :grid="$q.screen.lt.md || isGridView"
             >
@@ -25,11 +25,10 @@
                 <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4" v-if="$q.screen.lt.md || isGridView">
                     <q-card>
                     <q-card-section>
-                        <div class="text-h6">{{ props.row.codigo }}</div>
-                        <div class="text-subtitle2">{{ props.row.descricao }}</div>
-                        <div class="text-subtitle2">{{ props.row.dataInicio }}</div>
-                        <div class="text-subtitle2">{{ props.row.dataFinal }}</div>
-                        <div class="text-subtitle2">{{ props.row?.empresa?.pessoa?.nome }}</div>
+                         <div class="text-h6">{{ props.row.descricao }}</div>
+                        <div class="text-subtitle2">Data Início: {{ props.row.dataInicio }}</div>
+                        <div class="text-subtitle2">Data Final: {{ props.row.dataFinal }}</div>
+                        <div class="text-subtitle2">Empresa: {{ props.row?.empresa?.pessoa?.nome }}</div>
                     </q-card-section>
                     <q-separator />
                     <q-card-actions align="center">
@@ -108,12 +107,12 @@ const columns = [
     { name: 'descricao', required: true, label: 'Descrição', align: 'left', field: 'descricao', sortable: true },
     { name: 'dataInicio', label: 'Data Inicio', field: 'dataInicio', sortable: true },
     { name: 'dataFinal', label: 'Data Final', field: 'dataFinal', sortable: true },
-    { name: 'actions', label: 'Acções', field: 'actions', sortable: false }
+    { name: 'actions', label: 'Acções', align: 'center', field: 'actions', sortable: false }
 ];
 
 async function onRequest(props: any) {
-  const { page, rowsPerPage } = props.pagination;
-  await eventoStore.getEventosPaginado(page, rowsPerPage, filter.value);
+  eventoStore.pagination = props.pagination;
+  await eventoStore.getEventosPaginado();
 }
 
 function openDialog(evento?: EventoResponse) {

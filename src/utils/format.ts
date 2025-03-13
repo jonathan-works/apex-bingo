@@ -27,3 +27,8 @@ export function formatarDocumento(doc: string) {
 
   return doc;
 }
+
+
+export function formatarParaReal(valor: number): string {
+  return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}

@@ -9,7 +9,7 @@
     >
       <q-card class="q-dialog-plugin" style="width: 700px; max-width: 80vw;">
         <q-card-section class="row items-center q-pb-none q-px-lg">
-          <div class="text-h6">{{ isEdit ? 'Editar' : 'Nova' }} Rifa</div>
+          <div class="text-h6">{{ isEdit ? 'Editar' : 'Nova' }} Cartela</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -18,20 +18,20 @@
           <q-form @submit="onSubmit" class="q-pa-sm">
             <div class="row q-col-gutter-md">
               <div class="col-12">
-                <SelectVendedor
-                  label="Vendedor *"
-                  v-model:items-filtrados="gestaoRifaStore.vendedoresFiltrados"
-                  v-model:items="gestaoRifaStore.vendedores"
-                  v-model="form.vendedor as VendedorRequest" 
-                  :rules="[(val: any) => !!val || 'Vendedor é obrigatório']"
+                <SelectEvento
+                  label="Evento *"
+                  v-model:items-filtrados="cartelaStore.eventosFiltrados"
+                  v-model:items="cartelaStore.eventos"
+                  v-model="form.evento as EventoResponse" 
+                  :rules="[(val: any) => !!val || 'Evento é obrigatório']"
                   clearable />
               </div>
-              <div class="col-md-4 col-12">
+              <div class="col-md-3 col-12">
                 <q-input
-                  v-model="form.numeroBloco"
-                  label="Número do bloco *"
+                  v-model="form.valor"
+                  label="Valor *"
                   :rules="[
-                    val => !!val || 'Número do bloco é obrigatória',
+                    val => !!val || 'Valor é obrigatória',
                     val => val.length >= 1 || 'Mínimo de 1 caracteres'
                   ]"
                   type="number"
@@ -39,7 +39,7 @@
                   dense
                 />
               </div>
-              <div class="col-md-4 col-12">
+              <div class="col-md-3 col-12">
                 <q-input
                   v-model="form.numeroInicial"
                   label="Número Inicial *"
@@ -52,7 +52,7 @@
                   dense
                 />
               </div>
-              <div class="col-md-4 col-12">
+              <div class="col-md-3 col-12">
                 <q-input
                   v-model="form.numeroFinal"
                   label="Número Final *"
@@ -65,38 +65,16 @@
                   dense
                 />
               </div>
-              <div class="col-md-4 col-12">
+              <div class="col-md-3 col-12">
                 <q-select
                     dense
                     outlined
                     emit-value
                     map-options
                     v-model="form.ativo"
-                    :options="ativo"
-                    label="Ativo *"
+                    :options="tipo"
+                    label="Tipo *"
                     :rules="[val => !!val || 'Ativo é obrigatório']"
-                />
-              </div>
-              <div class="col-md-8 col-12">
-                <SelectEvento
-                  label="Evento *"
-                  v-model:items-filtrados="gestaoRifaStore.eventosFiltrados"
-                  v-model:items="gestaoRifaStore.eventos"
-                  v-model="form.evento as EventoResponse" 
-                  :rules="[(val: any) => !!val || 'Evento é obrigatório']"
-                  clearable />
-              </div>
-
-              <div class="col-12">
-                <q-input
-                  v-model="form.descricao"
-                  label="Descrição *"
-                  :rules="[
-                    val => !!val || 'Descrição é obrigatória',
-                    val => val.length >= 3 || 'Mínimo de 3 caracteres'
-                  ]"
-                  outlined
-                  dense
                 />
               </div>
             </div>
@@ -122,21 +100,22 @@
   
 <script setup lang="ts">
 import { computed, ref, watch, onMounted } from 'vue';
+import { useCartelaStore } from 'src/stores/cartela.store';
 import { EventoResponse } from 'src/model/evento.interface';
+import { CartelaRequest } from 'src/model/cartela.interface';
 import { StatusCartela } from 'src/model/status-cartela.enum';
 import { VendedorRequest } from 'src/model/vendedor.interface';
-import SelectEvento from 'src/components/select/SelectEvento.vue';
-import { useGestaoRifaStore } from 'src/stores/gestao-rifa.store';
-import SelectVendedor from 'src/components/select/SelectVendedor.vue';
 import { GestaoCartelaRequest } from 'src/model/gestao-cartela.interfave';
+import SelectEvento from 'src/components/select/SelectEvento.vue';
+import { Tipo } from 'src/model/tipo.enum';
 
 interface Props {
   modelValue: boolean;
-  gestaoRifa?: GestaoCartelaRequest | null;
+  cartela?: CartelaRequest | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  gestaoRifa: null
+  cartela: null
 });
 
 const emit = defineEmits<{
@@ -144,36 +123,34 @@ const emit = defineEmits<{
 }>();
 
 
-const gestaoRifaStore = useGestaoRifaStore();
+const cartelaStore = useCartelaStore();
 
 onMounted(async () => {
-  await gestaoRifaStore.carregarEventos();
-  await gestaoRifaStore.carregarVendedor();
+  await cartelaStore.carregarEventos();
+  await cartelaStore.carregarVendedor();
 });
 
-const isEdit = computed(() => !!props.gestaoRifa?.codigo);
-const ativo = Object.keys(StatusCartela).map((key) => ({ label: StatusCartela[key as keyof typeof StatusCartela], value: key as string }));
+const isEdit = computed(() => !!props.cartela?.codigo);
+const tipo = Object.keys(Tipo).map((key) => ({ label: Tipo[key as keyof typeof Tipo], value: key as string }));
 
-const form = ref<GestaoCartelaRequest>({
-  numeroBloco: undefined,
+const form = ref<CartelaRequest>({
   numeroInicial: undefined,
   numeroFinal: undefined,
+  valor: undefined,
   tipo: 'C',
-  evento: undefined,
-  vendedor: undefined
+  evento: undefined
 });
 
-watch(() => props.gestaoRifa, (newCartela) => {
+watch(() => props.cartela, (newCartela) => {
   if (newCartela) {
     form.value = { ...newCartela };
   } else {
     form.value = {
-      numeroBloco: undefined,
       numeroInicial: undefined,
       numeroFinal: undefined,
+      valor: undefined,
       tipo: 'C',
-      evento: undefined,
-      vendedor: undefined
+      evento: undefined
     };
   }
 }, { immediate: true });
@@ -181,9 +158,9 @@ watch(() => props.gestaoRifa, (newCartela) => {
 async function onSubmit() {
   try {
     if (isEdit.value) {
-      await gestaoRifaStore.atualizarGestaoRifa(form.value);
+      await cartelaStore.atualizarCartela(form.value);
     } else {
-      await gestaoRifaStore.criarGestaoRifa(form.value);
+      await cartelaStore.criarCartela(form.value);
     }
     emit('update:modelValue', false);
   } catch (error) {
