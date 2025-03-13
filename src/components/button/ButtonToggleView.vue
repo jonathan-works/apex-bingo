@@ -1,4 +1,3 @@
-<!-- ButtonToggleView.vue -->
 <template>
   <q-btn
     :icon="isGridView ? 'view_list' : 'grid_view'"

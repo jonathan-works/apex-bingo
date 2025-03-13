@@ -84,10 +84,10 @@
   </template>
   
 <script setup lang="ts">
-import { defineEmits, defineProps, computed, ref, watch, onMounted } from 'vue';
 import { useEventoStore } from '../../stores/evento.store';
-import SelectEmpresa from 'src/components/select/SelectEmpresa.vue';
 import { EventoResponse } from 'src/model/evento.interface';
+import SelectEmpresa from 'src/components/select/SelectEmpresa.vue';
+import { defineEmits, defineProps, computed, ref, watch, onMounted } from 'vue';
   
 const eventoStore = useEventoStore();
 

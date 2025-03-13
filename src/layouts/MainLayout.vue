@@ -64,11 +64,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
+import { useRouter } from 'vue-router';
+import Logo from 'src/components/Logo.vue';
 import { useAuthStore } from 'stores/auth.store';
 import EssentialLink, { type EssentialLinkProps } from 'components/EssentialLink.vue';
-import Logo from 'src/components/Logo.vue';
 
 const $q = useQuasar();
 

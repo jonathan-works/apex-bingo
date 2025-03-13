@@ -99,15 +99,15 @@
 </template>
   
 <script setup lang="ts">
+import { Tipo } from 'src/model/tipo.enum';
 import { computed, ref, watch, onMounted } from 'vue';
 import { useCartelaStore } from 'src/stores/cartela.store';
 import { EventoResponse } from 'src/model/evento.interface';
 import { CartelaRequest } from 'src/model/cartela.interface';
 import { StatusCartela } from 'src/model/status-cartela.enum';
 import { VendedorRequest } from 'src/model/vendedor.interface';
-import { GestaoCartelaRequest } from 'src/model/gestao-cartela.interfave';
 import SelectEvento from 'src/components/select/SelectEvento.vue';
-import { Tipo } from 'src/model/tipo.enum';
+import { GestaoCartelaRequest } from 'src/model/gestao-cartela.interfave';
 
 interface Props {
   modelValue: boolean;
@@ -172,4 +172,3 @@ function onHide() {
   emit('update:modelValue', false);
 }
 </script>
-src/model/status-cartela.enum

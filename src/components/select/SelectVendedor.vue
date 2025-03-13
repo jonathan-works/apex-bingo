@@ -4,7 +4,7 @@
         outlined
         v-model="model"
         use-input
-        :option-label="(vendedor: VendedorResponse) => vendedor.pessoa.nome"
+        :option-label="(vendedor) => vendedor.pessoa.nome"
         input-debounce="0"
         label="Vendedor"
         :options="options"

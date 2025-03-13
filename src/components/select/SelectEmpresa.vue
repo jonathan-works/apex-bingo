@@ -4,7 +4,7 @@
         outlined
         v-model="model"
         use-input
-        :option-label="(empresa: EmpresaResponse) => empresa.pessoa?.nome"
+        :option-label="(empresa) => empresa.pessoa?.nome"
         input-debounce="0"
         label="Empresa"
         :options="options"

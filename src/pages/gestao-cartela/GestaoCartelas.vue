@@ -87,13 +87,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
+import { ref, onMounted } from 'vue';
+import { StatusCartela } from 'src/model/status-cartela.enum';
+import GestaoCartelasDialog from './GestaoCartelasDialog.vue';
 import { useGestaoCartelaStore } from 'src/stores/gestao-cartela.store';
 import ButtonToggleView from 'src/components/button/ButtonToggleView.vue';
 import { GestaoCartelaResponse } from 'src/model/gestao-cartela.interfave';
-import GestaoCartelasDialog from './GestaoCartelasDialog.vue';
-import { StatusCartela } from 'src/model/status-cartela.enum';
 
 const $q = useQuasar();
 const gestaoCartelaStore = useGestaoCartelaStore();

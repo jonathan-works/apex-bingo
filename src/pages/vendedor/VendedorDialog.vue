@@ -116,11 +116,11 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits, defineProps, computed, ref, watch } from 'vue';
-import { useVendedorStore } from 'src/stores/vendedor.store';
 import { TipoPessoa } from 'src/model/pessoa.interface';
+import { useVendedorStore } from 'src/stores/vendedor.store';
 import { DocumentValidator } from 'src/utils/documentValidator';
 import { VendedorResponse } from 'src/model/vendedor.interface';
+import { defineEmits, defineProps, computed, ref, watch } from 'vue';
 
 const vendedorStore = useVendedorStore();
 

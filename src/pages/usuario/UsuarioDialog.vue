@@ -169,12 +169,12 @@
   </template>
   
 <script setup lang="ts">
-import { UsuarioRequest } from 'src/model/usuario.interface';
-import { useUsuarioStore } from 'src/stores/usuario.store';
-import { defineEmits, defineProps, computed, ref, watch } from 'vue';
 import { Perfil } from 'src/model/perfil.enum';
-import { DocumentValidator } from 'src/utils/documentValidator';
 import { TipoPessoa } from 'src/model/pessoa.interface';
+import { useUsuarioStore } from 'src/stores/usuario.store';
+import { UsuarioRequest } from 'src/model/usuario.interface';
+import { DocumentValidator } from 'src/utils/documentValidator';
+import { defineEmits, defineProps, computed, ref, watch } from 'vue';
   
 const usuarioStore = useUsuarioStore();
 

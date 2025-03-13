@@ -90,10 +90,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
-import { formatarDocumento, formatarTelefone } from 'src/utils/format';
+import UsuarioDialog from './UsuarioDialog.vue';
 import { useUsuarioStore } from 'src/stores/usuario.store';
 import { UsuarioResponse } from 'src/model/usuario.interface';
-import UsuarioDialog from './UsuarioDialog.vue';
+import { formatarDocumento, formatarTelefone } from 'src/utils/format';
 import ButtonToggleView from 'src/components/button/ButtonToggleView.vue';
   
   const $q = useQuasar();

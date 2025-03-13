@@ -26,8 +26,8 @@ export default function useApi(url: string) {
   return {
     list,
     post,
+    patch,
     update,
     remove,
-    patch,
   };
 }

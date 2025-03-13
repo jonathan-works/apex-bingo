@@ -87,15 +87,15 @@
 <script setup lang="ts">
 import { Notify } from 'quasar'
 import { ref, computed } from 'vue';
-import { useAuthStore } from 'stores/auth.store';
 import { useRouter } from 'vue-router';
 import Logo from 'src/components/Logo.vue';
+import { useAuthStore } from 'stores/auth.store';
 
 const authStore = useAuthStore();
 const router = useRouter();
-const codigoCliente = ref(''); //16baecd1
-const user = ref(''); //adrianoaguiardez@gmail.com
-const password = ref(''); //#2024Log
+const codigoCliente = ref('');
+const user = ref('');
+const password = ref('');
 const isPwd = ref(true);
 const loading = ref(false);
 

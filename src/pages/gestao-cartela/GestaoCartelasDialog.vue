@@ -118,13 +118,13 @@
   
 <script setup lang="ts">
 import { computed, ref, watch, onMounted } from 'vue';
-import { useGestaoCartelaStore } from 'src/stores/gestao-cartela.store';
-import SelectEvento from 'src/components/select/SelectEvento.vue';
-import { GestaoCartelaRequest } from 'src/model/gestao-cartela.interfave';
-import { StatusCartela } from 'src/model/status-cartela.enum';
 import { EventoResponse } from 'src/model/evento.interface';
+import { StatusCartela } from 'src/model/status-cartela.enum';
 import { VendedorRequest } from 'src/model/vendedor.interface';
+import SelectEvento from 'src/components/select/SelectEvento.vue';
 import SelectVendedor from 'src/components/select/SelectVendedor.vue';
+import { useGestaoCartelaStore } from 'src/stores/gestao-cartela.store';
+import { GestaoCartelaRequest } from 'src/model/gestao-cartela.interfave';
 
 interface Props {
   modelValue: boolean;
