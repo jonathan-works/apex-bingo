@@ -2,12 +2,12 @@
     <q-page padding>
         <div class="q-pa-md">
             <q-table
-                title="Gestão de Cartelas"
-                :rows="gestaoCartelaStore.gestaoCartelasPaginados"
+                title="Gestão de Rifas"
+                :rows="gestaoRifaStore.gestaoRifasPaginados"
                 :columns="columns"
                 row-key="codigo"
-                :loading="gestaoCartelaStore.loading"
-                :pagination="gestaoCartelaStore.pagination"
+                :loading="gestaoRifaStore.loading"
+                :pagination="gestaoRifaStore.pagination"
                 @request="onRequest"
                 :grid="$q.screen.lt.md || isGridView"
             >
@@ -17,7 +17,7 @@
                         v-if="!$q.screen.lt.md"
                         v-model:isGrid="isGridView"
                         />
-                        <q-btn color="primary" label="Nova Cartela" @click="openDialog()" class="q-ml-sm" />
+                        <q-btn color="primary" label="Nova Rifa" @click="openDialog()" class="q-ml-sm" />
                     </div>
                 </template>
 
@@ -79,9 +79,9 @@
                 </template>
             </q-table>
         </div>
-        <GestaoCartelasDialog
+        <GestaoRifasDialog
             v-model="showDialog"
-            :gestao-cartela="gestaoCartelaStore.gestaoCartela"
+            :gestao-rifa="gestaoRifaStore.gestaoRifa"
         />
     </q-page>
 </template>
@@ -89,13 +89,13 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
-import { useGestaoCartelaStore } from 'src/stores/gestao-cartela.store';
-import ButtonToggleView from 'src/components/button/ButtonToggleView.vue';
-import { GestaoCartelaResponse } from 'src/model/gestao-cartela.interfave';
-import GestaoCartelasDialog from './GestaoCartelasDialog.vue';
+import GestaoRifasDialog from 'src/pages/gestao-rifa/GestaoRifasDialog.vue';
+import { useGestaoRifaStore } from 'src/stores/gestao-rifa.store';
+import { GestaoRifaResponse } from 'src/model/cartela-rifa.interface';
 
 const $q = useQuasar();
-const gestaoCartelaStore = useGestaoCartelaStore();
+const gestaoRifaStore = useGestaoRifaStore();
+
 const isGridView = ref(false);
 const showDialog = ref(false);
 const filter = ref(null);
@@ -105,40 +105,40 @@ interface Column {
   required?: boolean;
   label: string;
   align?: 'left' | 'right' | 'center';
-  field: string | ((row: GestaoCartelaResponse) => any);
+  field: string | ((row: GestaoRifaResponse) => any);
   sortable?: boolean;
 }
 
 const columns: Column[] = [
     { name: 'codigo', required: true, label: 'Código', align: 'left', field: 'codigo', sortable: true },
     { name: 'descricao', required: true, label: 'Descrição', align: 'left', field: 'descricao', sortable: true },
-    { name: 'evento', label: 'Evento', field: (row: GestaoCartelaResponse) => row.evento?.descricao, sortable: true },
-    { name: 'empresa', label: 'Empresa', field: (row: GestaoCartelaResponse) => row.empresa?.pessoa?.nome, sortable: true },
+    { name: 'evento', label: 'Evento', field: (row: GestaoRifaResponse) => row.evento?.descricao, sortable: true },
+    { name: 'empresa', label: 'Empresa', field: (row: GestaoRifaResponse) => row.empresa?.pessoa?.nome, sortable: true },
     { name: 'actions', label: 'Ações', field: 'actions', sortable: false }
 ];
 
 onMounted(async () => {
-  await gestaoCartelaStore.getGestaoCartelaPaginado();
+  await gestaoRifaStore.getGestaoCartelaPaginado();
 });
 
 async function onRequest(props: any) {
   const { page, rowsPerPage } = props.pagination;
-  await gestaoCartelaStore.getGestaoCartelaPaginado(page, rowsPerPage, filter.value);
+  await gestaoRifaStore.getGestaoCartelaPaginado(page, rowsPerPage, filter.value);
 }
 
-function openDialog(gestaoCartela?: GestaoCartelaResponse) {
-  gestaoCartelaStore.gestaoCartela = gestaoCartela ? { ...gestaoCartela } : null;
+function openDialog(gestaoRifa?: GestaoRifaResponse) {
+  gestaoRifaStore.gestaoRifa = gestaoRifa ? { ...gestaoRifa } : null;
   showDialog.value = true;
 }
 
-function editar(gestaoCartela: GestaoCartelaResponse) {
-  openDialog(gestaoCartela);
+function editar(gestaoRifa: GestaoRifaResponse) {
+  openDialog(gestaoRifa);
 }
 
-function confirmarExclusao(gestaoCartela: GestaoCartelaResponse) {
+function confirmarExclusao(gestaoRifa: GestaoRifaResponse) {
   $q.dialog({
     title: 'Confirmar exclusão',
-    message: `Deseja realmente excluir a cartela ${gestaoCartela?.descricao}?`,
+    message: `Deseja realmente excluir a rifa ${gestaoRifa?.descricao}?`,
     cancel: {
       label: 'Cancelar',
       flat: true,
@@ -151,10 +151,10 @@ function confirmarExclusao(gestaoCartela: GestaoCartelaResponse) {
     persistent: true
   }).onOk(async () => {
     try {
-      await gestaoCartelaStore.excluirGestaoCartela(Number(gestaoCartela.codigo));
-      await gestaoCartelaStore.getGestaoCartelaPaginado(
-        gestaoCartelaStore.pagination.page, 
-        gestaoCartelaStore.pagination.rowsPerPage, 
+      await gestaoRifaStore.excluirGestaoCartela(Number(gestaoRifa.codigo));
+      await gestaoRifaStore.getGestaoCartelaPaginado(
+        gestaoRifaStore.pagination.page, 
+        gestaoRifaStore.pagination.rowsPerPage, 
         filter.value
       );
     } catch (error) {

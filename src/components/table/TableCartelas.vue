@@ -66,7 +66,7 @@
             </tr>
         </tbody>
     </q-markup-table> -->
-    {{ gestaoCartelaStore.gestaoCarteira }}
+    {{ gestaoCartelaStore.gestaoCartela }}
     <q-table
       flat bordered
       title="Gestão de Cartelas"
@@ -82,7 +82,7 @@ import { useGestaoCartelaStore } from 'src/stores/gestao-cartela.store';
 import { ref } from 'vue'
 
 const gestaoCartelaStore = useGestaoCartelaStore();
-gestaoCartelaStore.getGestaoCarteiraPaginado();
+gestaoCartelaStore.getGestaoCartelaPaginado();
 
 const columns = [
   {

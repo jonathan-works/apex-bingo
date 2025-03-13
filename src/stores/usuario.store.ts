@@ -1,12 +1,12 @@
-import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { AxiosError } from 'axios'
+import { defineStore } from 'pinia'
 import useNotify from 'src/composable/UseNotify'
 import { ErrorApi } from 'src/model/error.interface'
-import { UsuarioRequest, UsuarioResponse } from 'src/model/usuario.interface'
-import { usuarioService } from 'src/services/usuario.service'
 import { RoleResponse } from 'src/model/role.interface'
 import { roleService } from 'src/services/role.service'
+import { usuarioService } from 'src/services/usuario.service'
+import { UsuarioRequest, UsuarioResponse } from 'src/model/usuario.interface'
 
 const notify = useNotify()
 

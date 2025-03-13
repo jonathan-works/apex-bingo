@@ -1,4 +1,4 @@
-import { CartelaRifaResponse } from "./cartela-rifa.interface";
+import { GestaoRifaResponse } from "src/model/cartela-rifa.interface";
 import { EventoRequest, EventoResponse } from "./evento.interface";
 import { PageResponse } from "./page.interface";
 import { VendedorRequest } from "./vendedor.interface";
@@ -6,7 +6,7 @@ import { EmpresaResponse } from "./empresa.interface";
 
 
 export interface GestaoCartelaRequest {
-    codigo: string;
+    codigo?: string;
     numeroBloco: number | undefined;
     numeroInicial: number | undefined;
     numeroFinal: number | undefined;
@@ -30,7 +30,7 @@ export interface GestaoCartelaResponse {
 export interface GestaoCartelaItemResponse{
     codigo: string;
     numeroBloco: string;
-    cartelaRifa: CartelaRifaResponse;
+    cartelaRifa: GestaoRifaResponse;
     tipo: 'C' | 'R'
 }
 
@@ -38,7 +38,7 @@ export interface GestaoCartelaFilter{
     numero: number;
     nome: string;
     documento: string;
-    statusCarteira: 'D' | 'R' | 'P' | 'E' | 'C' | 'S' | 'G';
+    statusCartela: 'D' | 'R' | 'P' | 'E' | 'C' | 'S' | 'G';
     tipo: 'C' | 'D';
     dataInicio: Date;
     dataFinal: Date;

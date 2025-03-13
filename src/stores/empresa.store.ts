@@ -1,34 +1,34 @@
-import { defineStore } from 'pinia'
-import { empresaService } from 'src/services/empresa.service'
 import { ref } from 'vue'
-import { Empresa } from 'src/model/empresa.interface'
 import { AxiosError } from 'axios'
+import { defineStore } from 'pinia'
 import useNotify from 'src/composable/UseNotify'
 import { ErrorApi } from 'src/model/error.interface'
+import { empresaService } from 'src/services/empresa.service'
+import { EmpresaResponse } from 'src/model/empresa.interface'
 
 const notify = useNotify()
 
 export const useEmpresaStore = defineStore('empresa', () => {
-  const empresas = ref<Empresa[]>([])
+  const empresas = ref<EmpresaResponse[]>([])
   const loading = ref(false)
 
   async function buscarEmpresas() {
     try {
       loading.value = true
-      const { data } = await empresaService.listarEmpresas()
+      const data = await empresaService.list()
       empresas.value = data.content
     } finally {
       loading.value = false
     }
   }
 
-  async function salvarEmpresa(empresa: Empresa) {
+  async function salvarEmpresa(empresa: EmpresaResponse) {
     try {
       loading.value = true
       if (empresa.codigo) {
-        await empresaService.atualizarEmpresa(Number(empresa.codigo), empresa)
+        await empresaService.update(empresa.codigo, empresa)
       } else {
-        await empresaService.criarEmpresa(empresa)
+        await empresaService.create(empresa)
       }
       await buscarEmpresas()
     } catch (error: unknown) {
@@ -42,7 +42,7 @@ export const useEmpresaStore = defineStore('empresa', () => {
   async function excluirEmpresa(id: string) {
     try {
       loading.value = true
-      await empresaService.excluirEmpresa(Number(id))
+      await empresaService.delete(Number(id))
       await buscarEmpresas()
     } catch (error: unknown) {
       const err = error as AxiosError<ErrorApi>

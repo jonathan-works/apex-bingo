@@ -9,7 +9,7 @@
     >
       <q-card class="q-dialog-plugin" style="width: 700px; max-width: 80vw;">
         <q-card-section class="row items-center q-pb-none q-px-lg">
-          <div class="text-h6">{{ isEdit ? 'Editar' : 'Nova' }} Cartela</div>
+          <div class="text-h6">{{ isEdit ? 'Editar' : 'Nova' }} Rifa</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -20,8 +20,8 @@
               <div class="col-12">
                 <SelectVendedor
                   label="Vendedor *"
-                  v-model:items-filtrados="gestaoCartelaStore.vendedoresFiltrados"
-                  v-model:items="gestaoCartelaStore.vendedores"
+                  v-model:items-filtrados="gestaoRifaStore.vendedoresFiltrados"
+                  v-model:items="gestaoRifaStore.vendedores"
                   v-model="form.vendedor as VendedorRequest" 
                   :rules="[(val: any) => !!val || 'Vendedor é obrigatório']"
                   clearable />
@@ -80,8 +80,8 @@
               <div class="col-md-8 col-12">
                 <SelectEvento
                   label="Evento *"
-                  v-model:items-filtrados="gestaoCartelaStore.eventosFiltrados"
-                  v-model:items="gestaoCartelaStore.eventos"
+                  v-model:items-filtrados="gestaoRifaStore.eventosFiltrados"
+                  v-model:items="gestaoRifaStore.eventos"
                   v-model="form.evento as EventoResponse" 
                   :rules="[(val: any) => !!val || 'Evento é obrigatório']"
                   clearable />
@@ -122,21 +122,21 @@
   
 <script setup lang="ts">
 import { computed, ref, watch, onMounted } from 'vue';
-import { useGestaoCartelaStore } from 'src/stores/gestao-cartela.store';
-import SelectEvento from 'src/components/select/SelectEvento.vue';
-import { GestaoCartelaRequest } from 'src/model/gestao-cartela.interfave';
-import { StatusCartela } from 'src/model/status-cartela.enum';
 import { EventoResponse } from 'src/model/evento.interface';
+import { StatusCartela } from 'src/model/status-cartela.enum';
 import { VendedorRequest } from 'src/model/vendedor.interface';
+import SelectEvento from 'src/components/select/SelectEvento.vue';
+import { useGestaoRifaStore } from 'src/stores/gestao-rifa.store';
 import SelectVendedor from 'src/components/select/SelectVendedor.vue';
+import { GestaoCartelaRequest } from 'src/model/gestao-cartela.interfave';
 
 interface Props {
   modelValue: boolean;
-  gestaoCartela?: GestaoCartelaRequest | null;
+  gestaoRifa?: GestaoCartelaRequest | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  gestaoCartela: null
+  gestaoRifa: null
 });
 
 const emit = defineEmits<{
@@ -144,14 +144,14 @@ const emit = defineEmits<{
 }>();
 
 
-const gestaoCartelaStore = useGestaoCartelaStore();
+const gestaoRifaStore = useGestaoRifaStore();
 
 onMounted(async () => {
-  await gestaoCartelaStore.carregarEventos();
-  await gestaoCartelaStore.carregarVendedor();
+  await gestaoRifaStore.carregarEventos();
+  await gestaoRifaStore.carregarVendedor();
 });
 
-const isEdit = computed(() => !!props.gestaoCartela?.codigo);
+const isEdit = computed(() => !!props.gestaoRifa?.codigo);
 const ativo = Object.keys(StatusCartela).map((key) => ({ label: StatusCartela[key as keyof typeof StatusCartela], value: key as string }));
 
 const form = ref<GestaoCartelaRequest>({
@@ -163,7 +163,7 @@ const form = ref<GestaoCartelaRequest>({
   vendedor: undefined
 });
 
-watch(() => props.gestaoCartela, (newCartela) => {
+watch(() => props.gestaoRifa, (newCartela) => {
   if (newCartela) {
     form.value = { ...newCartela };
   } else {
@@ -181,9 +181,9 @@ watch(() => props.gestaoCartela, (newCartela) => {
 async function onSubmit() {
   try {
     if (isEdit.value) {
-      await gestaoCartelaStore.atualizarGestaoCartela(form.value);
+      await gestaoRifaStore.atualizarGestaoRifa(form.value);
     } else {
-      await gestaoCartelaStore.criarGestaoCartela(form.value);
+      await gestaoRifaStore.criarGestaoRifa(form.value);
     }
     emit('update:modelValue', false);
   } catch (error) {

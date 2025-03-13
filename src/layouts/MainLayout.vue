@@ -102,57 +102,25 @@ function handleLogout() {
 }
 
 const linksList: EssentialLinkProps[] = [
-  // {
-  //   title: 'Pedidos',
-  //   icon: 'storefront',
-  //   to: '/pedidos'
-  // },
-  // {
-  //   title: 'Usuários',
-  //   icon: 'group',
-  //   to: '/usuarios'
-  // },
-  // {
-  //   title: 'Serviços',
-  //   icon: 'room_service',
-  //   to: '/servicos'
-  // },
-  // {
-  //   title: 'Produtos',
-  //   icon: 'inventory_2',
-  //   to: '/produtos'
-  // },
-  // {
-  //   title: 'Condições de Pagamento',
-  //   icon: 'currency_exchange',
-  //   to: '/condicoes-pagamento'
-  // },
-  // {
-  //   title: 'Clientes',
-  //   icon: 'diversity_1',
-  //   to: '/clientes'
-  // },
-  // {
-  //   title: 'Empresas',
-  //   icon: 'business',
-  //   to: '/empresas'
-  // },
-  // {
-  //   title: 'Colaboradores',
-  //   icon: 'groups',
-  //   to: '/colaboradores'
-  // },
-
   {
     title: 'Gestão de Cartelas',
-    icon: 'groups',
+    icon: 'dataset',
     to: '/gestao-cartelas'
   },
-
+  {
+    title: 'Gestão de Rifa',
+    icon: 'app_registration',
+    to: '/gestao-rifas'
+  },
   {
     title: 'Clientes',
     icon: 'diversity_1',
     to: '/clientes'
+  },
+  {
+    title: 'Vendedores',
+    icon: 'support_agent',
+    to: '/vendedores'
   },
   {
     title: 'Usuarios',

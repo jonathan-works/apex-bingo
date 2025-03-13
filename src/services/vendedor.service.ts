@@ -18,7 +18,7 @@ export const vendedorService = {
     return await useApi('/api/v1/vendedores').update(request, id);
   },
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     return await useApi('/api/v1/vendedores').remove(id);
   },
 

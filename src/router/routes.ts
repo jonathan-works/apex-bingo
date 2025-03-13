@@ -1,5 +1,4 @@
 import { RouteRecordRaw } from 'vue-router';
-import { useAuthStore } from 'src/stores/auth.store';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -11,16 +10,15 @@ const routes: RouteRecordRaw[] = [
       { name: 'eventos', path: 'eventos', component: () => import('pages/evento/Eventos.vue') },
       { name: 'clientes', path: 'clientes', component: () => import('pages/cliente/Clientes.vue') },
       { name: 'usuarios', path: 'usuarios', component: () => import('pages/usuario/Usuarios.vue') },
-      { name: 'gestao-cartelas', path: 'gestao-cartelas', component: () => import('pages/gestao-cartela/GestaoCartelas.vue') }
+      { name: 'vendedores', path: 'vendedores', component: () => import('pages/vendedor/Vendedores.vue') },
+      { name: 'gestao-cartelas', path: 'gestao-cartelas', component: () => import('pages/gestao-cartela/GestaoCartelas.vue') },
+      { name: 'gestao-rifa', path: 'gestao-rifas', component: () => import('pages/gestao-rifa/GestaoRifas.vue') }
     ]
   },
   {
     path: '/login',
-    component: () => import('pages/Login.vue')
+    component: () => import('pages/login.vue')
   },
-
-  // Always leave this as last one,
-  // but you can also remove it
   {
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue'),

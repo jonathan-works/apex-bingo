@@ -4,7 +4,7 @@ import { PessoaRequest, PessoaResponse } from "./pessoa.interface";
 export interface VendedorResponse {
   codigo?: number;
   pessoa: PessoaResponse;
-  nomeUsuario: string;
+  nomeUsuario?: string;
 }
 
 export interface VendedorRequest {
@@ -17,4 +17,4 @@ export interface VendedorFilter {
   documento?: string;
 }
 
-export interface PageVendedorResponse extends PageResponse<VendedorRequest[]> {}
+export interface PageVendedorResponse extends PageResponse<VendedorResponse[]> {}

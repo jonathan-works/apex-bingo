@@ -9,7 +9,7 @@
   >
     <q-card class="q-dialog-plugin" style="width: 700px; max-width: 80vw;">
       <q-card-section class="row items-center q-pb-none q-px-lg">
-        <div class="text-h6">{{ isEdit ? 'Editar' : 'Novo' }} Cliente</div>
+        <div class="text-h6">{{ isEdit ? 'Editar' : 'Novo' }} Vendedor</div>
         <q-space />
         <q-btn icon="close" flat round dense v-close-popup />
       </q-card-section>
@@ -117,30 +117,28 @@
 
 <script setup lang="ts">
 import { defineEmits, defineProps, computed, ref, watch } from 'vue';
-import { ClienteResponse } from 'src/model/cliente.interface';
-import { useClienteStore } from 'src/stores/cliente.store';
+import { useVendedorStore } from 'src/stores/vendedor.store';
 import { TipoPessoa } from 'src/model/pessoa.interface';
 import { DocumentValidator } from 'src/utils/documentValidator';
+import { VendedorResponse } from 'src/model/vendedor.interface';
 
-const clienteStore = useClienteStore();
+const vendedorStore = useVendedorStore();
 
 const props = defineProps<{
   modelValue: boolean,
-  cliente?: ClienteResponse
+  vendedor?: VendedorResponse
 }>();
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
 }>();
 
-const isEdit = computed(() => !!props.cliente?.codigo);
+const isEdit = computed(() => !!props.vendedor?.codigo);
 
-const form = ref<ClienteResponse>({
-  codigo: undefined,
+const form = ref<VendedorResponse>({
   pessoa: {
-    codigo: undefined,
     nome: '',
-    tipoPessoa: 'FISICA',
+    tipoPessoa: TipoPessoa.FISICA,
     documento: '',
     dataNascimento: '',
     email: '',
@@ -160,14 +158,12 @@ const tiposPessoa = [
 
 watch(() => form.roles, (novo) => {
   if (novo) {
-      form.value = { ...novo } as ClienteResponse;
+      form.value = { ...novo } as VendedorResponse;
   } else {
       form.value = {
-        codigo: undefined,
         pessoa: {
-          codigo: undefined,
           nome: '',
-          tipoPessoa: 'FISICA',
+          tipoPessoa: TipoPessoa.FISICA,
           documento: '',
           dataNascimento: '',
           email: '',
@@ -180,9 +176,9 @@ watch(() => form.roles, (novo) => {
 async function onSubmit() {
   try {
       if (isEdit.value) {
-          await clienteStore.atualizarCliente(form.value);
+          await vendedorStore.atualizarVendedor(form.value);
       } else {
-          await clienteStore.criarCliente(form.value);
+          await vendedorStore.criarVendedor(form.value);
       }
       emit('update:modelValue', false);
   } catch (error) {

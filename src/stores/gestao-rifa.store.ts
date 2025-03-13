@@ -3,25 +3,26 @@ import { AxiosError } from 'axios'
 import { defineStore } from 'pinia'
 import useNotify from 'src/composable/UseNotify'
 import { ErrorApi } from 'src/model/error.interface'
+import { empresaService } from 'src/services/empresa.service'
+import { EmpresaResponse } from 'src/model/empresa.interface'
 import { EventoResponse } from 'src/model/evento.interface'
 import { eventoService } from 'src/services/evento.service'
-import { EmpresaResponse } from 'src/model/empresa.interface'
-import { empresaService } from 'src/services/empresa.service'
 import { VendedorResponse } from 'src/model/vendedor.interface'
 import { vendedorService } from 'src/services/vendedor.service'
-import { gestaoCartelaService } from 'src/services/gestao-cartela.service'
-import { GestaoCartelaRequest, GestaoCartelaResponse } from 'src/model/gestao-cartela.interfave'
+import { gestaoRifaService } from 'src/services/getao-rifa.service'
+import { GestaoRifaRequest, GestaoRifaResponse } from 'src/model/cartela-rifa.interface'
 
 const notify = useNotify()
 
-export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
+export const useGestaoRifaStore = defineStore('gestao-rifa', () => {
     const pagination = ref({
         page: 1,
         rowsPerPage: 10,
         rowsNumber: 0
     });
-    const gestaoCartela = ref<GestaoCartelaResponse | null>(null);
-    const gestaoCartelasPaginados = ref<GestaoCartelaResponse[]>([]);
+    const gestaoRifa = ref<GestaoRifaResponse | null>(null);
+    const gestaoRifasPaginados = ref<GestaoRifaResponse[]>([]);
+
     const empresas = ref<EmpresaResponse[]>([]);
     const empresasFiltradas = ref<EmpresaResponse[]>([]);
     const eventos = ref<EventoResponse[]>([]);
@@ -30,11 +31,11 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
     const vendedoresFiltrados = ref<VendedorResponse[]>([]);
     const loading = ref(false);
 
-    async function getGestaoCartelaPaginado(page: number = 1, rowsPerPage: number = 10, filter = null) {
+    async function getGestaoRifaPaginado(page: number = 1, rowsPerPage: number = 10, filter = null) {
         try {
         loading.value = true
-        const data = await gestaoCartelaService.list(filter, page - 1 , rowsPerPage);
-        gestaoCartelasPaginados.value = data.content
+        const data = await gestaoRifaService.list(filter, page - 1 , rowsPerPage);
+        gestaoRifasPaginados.value = data.content
         pagination.value.rowsNumber = data.totalElements
         } catch (error: unknown) {
         const err = error as AxiosError<ErrorApi>
@@ -83,11 +84,11 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
         }
     }
 
-    async function criarGestaoCartela(gestaoCartela: GestaoCartelaRequest) {
+    async function criarGestaoRifa(gestaoRifa: GestaoRifaRequest) {
         try {
         loading.value = true;
-        await gestaoCartelaService.create(gestaoCartela);
-        await getGestaoCartelaPaginado();
+        await gestaoRifaService.create(gestaoRifa);
+        await getGestaoRifaPaginado();
         notify.notifySuccess('Evento criado com sucesso!');
         } catch (error) {
         const err = error as AxiosError<ErrorApi>;
@@ -98,14 +99,14 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
         }
     }
 
-    async function atualizarGestaoCartela(gestaoCartela: GestaoCartelaRequest) {
+    async function atualizarGestaoRifa(gestaoRifa: GestaoRifaRequest) {
         try {
         loading.value = true;
-        if (!gestaoCartela.codigo) {
+        if (!gestaoRifa.codigo) {
             throw new Error('Código do evento é obrigatório para atualização');
         }
-        await gestaoCartelaService.update(gestaoCartela.codigo, gestaoCartela);
-        await getGestaoCartelaPaginado();
+        await gestaoRifaService.update(gestaoRifa.codigo, gestaoRifa);
+        await getGestaoRifaPaginado();
         notify.notifySuccess('Evento atualizado com sucesso!');
         } catch (error) {
         const err = error as AxiosError<ErrorApi>;
@@ -116,14 +117,14 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
         }
     }
 
-    async function excluirGestaoCartela(codigo: number) {
+    async function excluirGestaoRifa(codigo: number) {
         try {
         loading.value = true;
         if (!codigo) {
             throw new Error('Código do evento é obrigatório para excluir');
         }
-        await gestaoCartelaService.delete(codigo);
-        await getGestaoCartelaPaginado();
+        await gestaoRifaService.delete(codigo);
+        await getGestaoRifaPaginado();
         notify.notifySuccess('Evento excluído com sucesso!');
         } catch (error) {
         const err = error as AxiosError<ErrorApi>;
@@ -140,17 +141,17 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
         empresas,
         pagination,
         vendedores,
-        gestaoCartela,
+        gestaoRifa,
+        criarGestaoRifa,
         carregarEventos,
-        carregarVendedor,
         carregarEmpresas,
+        carregarVendedor,
         eventosFiltrados,
         empresasFiltradas,
+        excluirGestaoRifa,
+        atualizarGestaoRifa,
         vendedoresFiltrados,
-        criarGestaoCartela,
-        excluirGestaoCartela,
-        atualizarGestaoCartela,
-        gestaoCartelasPaginados,
-        getGestaoCartelaPaginado,
+        gestaoRifasPaginados,
+        getGestaoRifaPaginado,
     }
 })

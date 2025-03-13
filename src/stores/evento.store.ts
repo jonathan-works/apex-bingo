@@ -1,12 +1,12 @@
-import { defineStore } from 'pinia'
-import { empresaService } from 'src/services/empresa.service'
 import { ref } from 'vue'
-import { EmpresaResponse } from 'src/model/empresa.interface'
 import { AxiosError } from 'axios'
+import { defineStore } from 'pinia'
 import useNotify from 'src/composable/UseNotify'
 import { ErrorApi } from 'src/model/error.interface'
 import { eventoService } from 'src/services/evento.service'
-import { EventoResponse } from 'src/model/response/evento.response'
+import { EventoResponse } from 'src/model/evento.interface'
+import { EmpresaResponse } from 'src/model/empresa.interface'
+import { empresaService } from 'src/services/empresa.service'
 
 const notify = useNotify()
 
@@ -70,7 +70,7 @@ export const useEventoStore = defineStore('evento', () => {
             throw new Error('Código do evento é obrigatório para atualização');
         }
         await eventoService.update(evento.codigo, evento);
-        await getEventos();
+        await getEventosPaginado();
         notify.notifySuccess('Evento atualizado com sucesso!');
         } catch (error) {
         const err = error as AxiosError<ErrorApi>;

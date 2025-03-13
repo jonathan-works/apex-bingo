@@ -2,12 +2,12 @@
   <q-page padding>
       <div class="q-pa-md">
           <q-table
-              title="Clientes"
-              :rows="clienteStore.clientesPaginados"
+              title="Vendedores"
+              :rows="vendedorStore.vendedorPaginados"
               :columns="columns"
               row-key="codigo"
-              :loading="clienteStore.loading"
-              :pagination="clienteStore.pagination"
+              :loading="vendedorStore.loading"
+              :pagination="vendedorStore.pagination"
               @request="onRequest"
               :grid="$q.screen.lt.md || isGridView"
           >
@@ -80,9 +80,9 @@
               </template>
           </q-table>
       </div>
-      <ClienteDialog
+      <VendedorDialog
           v-model="showDialog"
-          :cliente="clienteStore.cliente as ClienteResponse"
+          :vendedor="vendedorStore.vendedor as VendedorResponse"
       />
   </q-page>
 </template>
@@ -90,15 +90,15 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
-import { useClienteStore } from 'src/stores/cliente.store';
-import ButtonToggleView from 'src/components/button/ButtonToggleView.vue';
-import { ClienteResponse } from 'src/model/cliente.interface';
-import ClienteDialog from './ClienteDialog.vue';
+import { useVendedorStore } from 'src/stores/vendedor.store';
+import { VendedorResponse } from 'src/model/vendedor.interface';
+import VendedorDialog from 'src/pages/vendedor/VendedorDialog.vue';
 import { formatarDocumento, formatarTelefone } from 'src/utils/format';
+import ButtonToggleView from 'src/components/button/ButtonToggleView.vue';
 
 const $q = useQuasar();
-const clienteStore = useClienteStore();
-clienteStore.getClientesPaginado();
+const vendedorStore = useVendedorStore();
+vendedorStore.getVendedoresPaginado();
 
 const isGridView = ref(false);
 const showDialog = ref(false);
@@ -114,26 +114,26 @@ const columns = [
     },
     {
       name: 'nome',
-      field: (row : ClienteResponse) => row.pessoa.nome,
+      field: (row : VendedorResponse) => row.pessoa.nome,
       label: 'Nome',
       align: 'left',
       sortable: true
     },
     {
       name: 'documento',
-      field: (row : ClienteResponse) => formatarDocumento(row.pessoa.documento),
+      field: (row : VendedorResponse) => formatarDocumento(row.pessoa.documento),
       label: 'Documento',
       align: 'left'
     },
     {
       name: 'email',
-      field: (row : ClienteResponse) => row.pessoa.email,
+      field: (row : VendedorResponse) => row.pessoa.email,
       label: 'Email',
       align: 'left'
     },
     {
       name: 'telefone',
-      field: (row : ClienteResponse) => formatarTelefone(row.pessoa.telefone),
+      field: (row : VendedorResponse) => formatarTelefone(row.pessoa.telefone),
       label: 'Telefone',
       align: 'left'
     },
@@ -147,22 +147,22 @@ const columns = [
 
 async function onRequest(props: any) {
   const { page, rowsPerPage } = props.pagination;
-  await clienteStore.getClientesPaginado(page, rowsPerPage, filter.value);
+  await vendedorStore.getVendedoresPaginado(page, rowsPerPage, filter.value);
 }
 
-function openDialog(cliente?: ClienteResponse) {
-  clienteStore.cliente = cliente ? { ...cliente } : null;
+function openDialog(vendedor?: VendedorResponse) {
+  vendedorStore.vendedor = vendedor ? { ...vendedor } : null;
   showDialog.value = true;
 }
 
-function editar(cliente: ClienteResponse) {
-  openDialog(cliente);
+function editar(vendedor: VendedorResponse) {
+  openDialog(vendedor);
 }
 
-function confirmarExclusao(cliente: ClienteResponse) {
+function confirmarExclusao(vendedor: VendedorResponse) {
   $q.dialog({
     title: 'Confirmar exclusão',
-    message: `Deseja realmente excluir o cliente ${cliente?.pessoa?.nome}?`,
+    message: `Deseja realmente excluir o vendedor ${vendedor?.pessoa?.nome}?`,
     cancel: {
       label: 'Cancelar',
       flat: true,
@@ -175,8 +175,8 @@ function confirmarExclusao(cliente: ClienteResponse) {
     persistent: true
   }).onOk(async () => {
     try {
-      await clienteStore.excluirCliente(cliente.codigo);
-      await clienteStore.getClientesPaginado(clienteStore.pagination.page, clienteStore.pagination.rowsPerPage, filter.value);
+      await vendedorStore.excluirVendedor(vendedor.codigo);
+      await vendedorStore.getVendedoresPaginado(vendedorStore.pagination.page, vendedorStore.pagination.rowsPerPage, filter.value);
     } catch (error) {
     }
   });

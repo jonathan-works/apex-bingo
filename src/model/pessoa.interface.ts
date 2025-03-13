@@ -17,7 +17,7 @@ export interface PessoaRequest {
 }
 
 export interface PessoaResponse {
-  codigo: number;
+  codigo?: number;
   nome: string;
   tipoPessoa: TipoPessoa;
   documento: string;

@@ -1,9 +1,9 @@
-import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { EmpresaResponse } from 'src/model/empresa.interface'
 import { AxiosError } from 'axios'
+import { defineStore } from 'pinia'
 import useNotify from 'src/composable/UseNotify'
 import { ErrorApi } from 'src/model/error.interface'
+import { EmpresaResponse } from 'src/model/empresa.interface'
 import { ClienteResponse } from 'src/model/cliente.interface'
 import { clienteService } from 'src/services/cliente.service'
 
