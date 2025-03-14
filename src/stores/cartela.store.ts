@@ -85,6 +85,20 @@ export const useCartelaStore = defineStore('cartela', () => {
         }
     }
 
+    async function carregarCarteiraPorId() {
+        try {
+            loading.value = true
+            const codigo = cartela.value?.codigo as string;
+            const data = await cartelaService.findById(codigo);
+            cartela.value = data
+        } catch (error: unknown) {
+        const err = error as AxiosError<ErrorApi>
+        notify.notifyErrorResponseAPI(err?.response?.data)
+        } finally {
+        loading.value = false
+        }
+    }
+
     async function criarCartela(gestaoRifa: CartelaRequest) {
         try {
         loading.value = true;
@@ -154,6 +168,7 @@ export const useCartelaStore = defineStore('cartela', () => {
         cartelasPaginadas,
         getCartelaPaginado,
         vendedoresFiltrados,
+        carregarCarteiraPorId,
 
     }
 })

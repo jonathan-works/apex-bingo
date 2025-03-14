@@ -116,6 +116,20 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
         }
     }
 
+    async function carregarCarteiraPorId() {
+        try {
+            loading.value = true
+            const codigo = gestaoCartela.value?.codigo as string;
+            const data = await gestaoCartelaService.findById(codigo);
+            gestaoCartela.value = data
+        } catch (error: unknown) {
+        const err = error as AxiosError<ErrorApi>
+        notify.notifyErrorResponseAPI(err?.response?.data)
+        } finally {
+        loading.value = false
+        }
+    }
+
     async function excluirGestaoCartela(codigo: number) {
         try {
         loading.value = true;
@@ -149,6 +163,7 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
         vendedoresFiltrados,
         criarGestaoCartela,
         excluirGestaoCartela,
+        carregarCarteiraPorId,
         atualizarGestaoCartela,
         gestaoCartelasPaginados,
         getGestaoCartelaPaginado,

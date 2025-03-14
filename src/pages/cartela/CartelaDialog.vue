@@ -143,7 +143,7 @@ const form = ref<CartelaRequest>({
 
 watch(() => props.cartela, (newCartela) => {
   if (newCartela) {
-    form.value = { ...newCartela };
+    form.value = { ...newCartela };    
   } else {
     form.value = {
       numeroInicial: undefined,

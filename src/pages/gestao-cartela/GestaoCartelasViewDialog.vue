@@ -9,7 +9,7 @@
     >
       <q-card class="q-dialog-plugin" style="width: 700px; max-width: 80vw;">
         <q-card-section class="row items-center q-pb-none q-px-lg">
-          <div class="text-h6">{{ isEdit ? 'Editar' : 'Nova' }} Cartela</div>
+          <div class="text-h6">{{ isEdit ? 'Visualizar' : 'Nova' }} Cartela</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -18,59 +18,40 @@
           <q-form @submit="onSubmit" class="q-pa-sm">
             <div class="row q-col-gutter-md">
               <div class="col-12">
+                <q-input
+                  v-model="form.dataCadastro"
+                  label="Descrição *"
+                  :rules="[
+                    val => !!val || 'Descrição é obrigatória',
+                    val => val.length >= 3 || 'Mínimo de 3 caracteres'
+                  ]"
+                  outlined
+                  dense
+                  readonly
+                />
+              </div>
+              <div class="col-12">
                 <SelectVendedor
                   label="Vendedor *"
                   v-model:items-filtrados="gestaoCartelaStore.vendedoresFiltrados"
                   v-model:items="gestaoCartelaStore.vendedores"
                   v-model="form.vendedor as VendedorRequest" 
                   :rules="[(val: any) => !!val || 'Vendedor é obrigatório']"
-                  clearable />
+                  clearable 
+                  readonly/>
               </div>
-              <div class="col-md-4 col-12">
-                <q-input
-                  v-model="form.numeroBloco"
-                  label="Número do bloco"
-                  type="number"
-                  outlined
-                  dense
-                />
-              </div>
-              <div class="col-md-4 col-12">
-                <q-input
-                  v-model="form.numeroInicial"
-                  label="Número Inicial *"
-                  :rules="[
-                    val => !!val || 'Número Inícial é obrigatória',
-                    val => val.length >= 1 || 'Mínimo de 1 caracteres'
-                  ]"
-                  type="number"
-                  outlined
-                  dense
-                />
-              </div>
-              <div class="col-md-4 col-12">
-                <q-input
-                  v-model="form.numeroFinal"
-                  label="Número Final *"
-                  :rules="[
-                    val => !!val || 'Número Final é obrigatória',
-                    val => val.length >= 1 || 'Mínimo de 1 caracteres'
-                  ]"
-                  type="number"
-                  outlined
-                  dense
-                />
-              </div>
+              
               <div class="col-md-4 col-12">
                 <q-select
                     dense
                     outlined
                     emit-value
                     map-options
-                    v-model="form.ativo"
-                    :options="ativo"
+                    v-model="form.status"
+                    :options="statusCartela"
                     label="Ativo *"
                     :rules="[val => !!val || 'Ativo é obrigatório']"
+                    readonly
                 />
               </div>
               <div class="col-md-8 col-12">
@@ -80,20 +61,12 @@
                   v-model:items="gestaoCartelaStore.eventos"
                   v-model="form.evento as EventoResponse" 
                   :rules="[(val: any) => !!val || 'Evento é obrigatório']"
-                  clearable />
-              </div>
-
-              <div class="col-12">
-                <q-input
-                  v-model="form.descricao"
-                  label="Descrição *"
-                  :rules="[
-                    val => !!val || 'Descrição é obrigatória',
-                    val => val.length >= 3 || 'Mínimo de 3 caracteres'
-                  ]"
-                  outlined
-                  dense
+                  clearable 
+                  readonly
                 />
+              </div>
+              <div class="col-12">
+                <TableCarteira :rows="form.itens || []" readonly />
               </div>
             </div>
   
@@ -105,8 +78,7 @@
                 v-close-popup
               />
               <q-btn
-                :label="isEdit ? 'Salvar' : 'Criar'"
-                type="submit"
+                label="Devolver"
                 color="primary"
               />
             </div>
@@ -125,6 +97,7 @@ import SelectEvento from 'src/components/select/SelectEvento.vue';
 import SelectVendedor from 'src/components/select/SelectVendedor.vue';
 import { useGestaoCartelaStore } from 'src/stores/gestao-cartela.store';
 import { GestaoCartelaRequest } from 'src/model/gestao-cartela.interfave';
+import TableCarteira from 'src/components/table/TableCarteira.vue';
 
 interface Props {
   modelValue: boolean;
@@ -148,7 +121,7 @@ onMounted(async () => {
 });
 
 const isEdit = computed(() => !!props.gestaoCartela?.codigo);
-const ativo = Object.keys(StatusCartela).map((key) => ({ label: StatusCartela[key as keyof typeof StatusCartela], value: key as string }));
+const statusCartela = Object.keys(StatusCartela).map((key) => ({ label: StatusCartela[key as keyof typeof StatusCartela], value: key as string }));
 
 const form = ref<GestaoCartelaRequest>({
   numeroBloco: undefined,
@@ -162,9 +135,9 @@ const form = ref<GestaoCartelaRequest>({
 watch(() => props.gestaoCartela, (newCartela, oudCartela) => {
   if (newCartela) {
     form.value = { ...newCartela };
-    //if(newCartela.codigo !== oudCartela?.codigo) {
-    //  gestaoCartelaStore.carregarCarteiraPorId();
-    //}
+    if(newCartela.codigo !== oudCartela?.codigo) {
+      gestaoCartelaStore.carregarCarteiraPorId();
+    }
   } else {
     form.value = {
       numeroBloco: undefined,
