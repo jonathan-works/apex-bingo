@@ -13,5 +13,4 @@ export enum MeioPagamento{
     PIX = "PIX",
     TRANSERENCIABANCARIA = "Transferencia Bancaria",
     SEMPAGAMENTO = "Sem Pagamento"
-
 }

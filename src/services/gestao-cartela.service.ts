@@ -15,24 +15,28 @@ export const gestaoCartelaService = {
     return await useApi('/api/v1/gestao-cartelas').update(request, id);
   },
 
-  async receberCartela(gestaoCartelaCodigo: number, gestaoCodigo: number, receberCartela: ReceberCartelaRequest): Promise<GestaoCartelaItemResponse> {
+  async receberCartela(gestaoCartelaCodigo: string, gestaoCodigo: number, receberCartela: ReceberCartelaRequest): Promise<GestaoCartelaItemResponse> {
     return await useApi(`/api/v1/gestao-cartelas/receber-cartela/${gestaoCartelaCodigo}/gestao/${gestaoCodigo}/cartela`).patch(receberCartela);
   },
 
-  async informarSorteada(gestaoCartelaCodigo: number, gestaoCodigo: number, receberCartela: ReceberCartelaRequest): Promise<GestaoCartelaItemResponse> {
+  async informarSorteada(gestaoCartelaCodigo: string, gestaoCodigo: number, receberCartela: ReceberCartelaRequest): Promise<GestaoCartelaItemResponse> {
     return await useApi(`/api/v1/gestao-cartelas/informar-sorteada/${gestaoCartelaCodigo}/gestao/${gestaoCodigo}/cartela`).patch(receberCartela);
   },
 
-  async informarGanhador(gestaoCartelaCodigo: number, gestaoCodigo: number, receberCartela: ReceberCartelaRequest): Promise<GestaoCartelaItemResponse> {
+  async informarGanhador(gestaoCartelaCodigo: string, gestaoCodigo: number, receberCartela: ReceberCartelaRequest): Promise<GestaoCartelaItemResponse> {
     return await useApi(`/api/v1/gestao-cartelas/informar-ganhadora/${gestaoCartelaCodigo}/gestao/${gestaoCodigo}/cartela`).patch(receberCartela);
+  },
+
+  async devolver(gestaoCartelaCodigo: string, gestaoCodigo: number, devolverCartela: DevolverCartelaRequest): Promise<GestaoCartelaItemResponse> {
+    return await useApi(`/api/v1/gestao-cartelas/devolver/${gestaoCartelaCodigo}/gestao/${gestaoCodigo}/cartela`).patch(devolverCartela);
   },
 
   async delete(id: string): Promise<void> {
     return await useApi('/api/v1/gestao-cartelas').remove(id);
   },
 
-  async devolver(codigo: string): Promise<void> {
-    return await useApi(`/api/v1/gestao-cartelas/${codigo}/devolucao`).remove(id);
+  async devolverTodasCartelas(codigo: string): Promise<void> {
+    return await useApi(`/api/v1/gestao-cartelas/${codigo}/devolucao`).removeCustom();
   },
 
   async findById(id: string): Promise<GestaoCartelaResponse> {

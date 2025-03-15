@@ -9,7 +9,7 @@
     >
       <q-card class="q-dialog-plugin" style="width: 700px; max-width: 80vw;">
         <q-card-section class="row items-center q-pb-none q-px-lg">
-          <div class="text-h6">{{ isEdit ? 'Visualizar' : 'Nova' }} Cartela</div>
+          <div class="text-h6">{{ isEdit ? 'Visualizar' : 'Nova' }} Gestão de Cartela</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -20,7 +20,7 @@
               <div class="col-12">
                 <q-input
                   v-model="form.dataCadastro"
-                  label="Descrição *"
+                  label="Data de cadastro *"
                   :rules="[
                     val => !!val || 'Descrição é obrigatória',
                     val => val.length >= 3 || 'Mínimo de 3 caracteres'
@@ -41,7 +41,7 @@
                   readonly/>
               </div>
               
-              <div class="col-md-4 col-12">
+              <div class="col-md-3 col-12">
                 <q-select
                     dense
                     outlined
@@ -54,7 +54,7 @@
                     readonly
                 />
               </div>
-              <div class="col-md-8 col-12">
+              <div class="col-md-9 col-12">
                 <SelectEvento
                   label="Evento *"
                   v-model:items-filtrados="gestaoCartelaStore.eventosFiltrados"
@@ -78,8 +78,9 @@
                 v-close-popup
               />
               <q-btn
-                label="Devolver"
+                label="Devolver Todos"
                 color="primary"
+                @click="devolverTodasCartelas"
               />
             </div>
           </q-form>
@@ -94,10 +95,11 @@ import { EventoResponse } from 'src/model/evento.interface';
 import { StatusCartela } from 'src/model/status-cartela.enum';
 import { VendedorRequest } from 'src/model/vendedor.interface';
 import SelectEvento from 'src/components/select/SelectEvento.vue';
+import TableCarteira from 'src/components/table/TableCarteira.vue';
 import SelectVendedor from 'src/components/select/SelectVendedor.vue';
 import { useGestaoCartelaStore } from 'src/stores/gestao-cartela.store';
 import { GestaoCartelaRequest } from 'src/model/gestao-cartela.interfave';
-import TableCarteira from 'src/components/table/TableCarteira.vue';
+import { useQuasar } from 'quasar';
 
 interface Props {
   modelValue: boolean;
@@ -112,7 +114,7 @@ const emit = defineEmits<{
   'update:modelValue': [value: boolean]
 }>();
 
-
+const $q = useQuasar();
 const gestaoCartelaStore = useGestaoCartelaStore();
 
 onMounted(async () => {
@@ -165,5 +167,18 @@ async function onSubmit() {
 
 function onHide() {
   emit('update:modelValue', false);
+}
+
+function devolverTodasCartelas() {
+  const codigo = gestaoCartelaStore.gestaoCartela?.codigo;
+  if (!codigo) return;
+  $q.dialog({
+    title: 'Devolver todos',
+    message: 'Tem certeza de que deseja devolver todas os items?',
+    cancel: true,
+    persistent: true
+  }).onOk(() => {
+    gestaoCartelaStore.devolverTodasCartelas(codigo);
+  });
 }
 </script>

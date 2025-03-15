@@ -22,12 +22,12 @@ export interface CartelaResponse{
 }
 
 export interface ReceberCartelaRequest{
-  meioPagamento: 'Dinheiro' | 'CHEQUE' | 'CARTAOCREDITO' | 'CARTAODEBITO' | 'CREDITOLOJA' | 'VALEALIMENTACAO' | 'VALEREFEICAO' | 'VALEPRESENTE' | 'VALECOMBUSTIVEL' | 'BOLETOBANCARIO' | 'DEPOSITOBANCARIO' | 'PIX' | 'TRANSERENCIABANCARIA' | 'SEMPAGAMENTO';
-  dataPagamento: Date;
+  meioPagamento: string;
+  dataPagamento: string;
 }
 
 export interface DevolverCartelaRequest{
-  meioPagamento: string
+  motivo: string
 }
 
 export interface CartelaFilter{

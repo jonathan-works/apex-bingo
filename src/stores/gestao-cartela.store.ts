@@ -11,6 +11,8 @@ import { VendedorResponse } from 'src/model/vendedor.interface'
 import { vendedorService } from 'src/services/vendedor.service'
 import { gestaoCartelaService } from 'src/services/gestao-cartela.service'
 import { GestaoCartelaRequest, GestaoCartelaResponse } from 'src/model/gestao-cartela.interfave'
+import { CartelaResponse, DevolverCartelaRequest, ReceberCartelaRequest } from 'src/model/cartela.interface'
+import { cartelaService } from 'src/services/cartela.service'
 
 const notify = useNotify()
 
@@ -26,6 +28,8 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
     const empresasFiltradas = ref<EmpresaResponse[]>([]);
     const eventos = ref<EventoResponse[]>([]);
     const eventosFiltrados = ref<EventoResponse[]>([]);
+    const cartelas = ref<CartelaResponse[]>([]);
+    const cartelasFiltradas = ref<CartelaResponse[]>([]);
     const vendedores = ref<VendedorResponse[]>([]);
     const vendedoresFiltrados = ref<VendedorResponse[]>([]);
     const loading = ref(false);
@@ -57,6 +61,18 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
         }
     }
 
+    async function carregarCartelas() {
+        try {
+            loading.value = true
+            const data = await cartelaService.listAll();
+            cartelas.value = data
+        } catch (error: unknown) {
+        const err = error as AxiosError<ErrorApi>
+        notify.notifyErrorResponseAPI(err?.response?.data)
+        } finally {
+        loading.value = false
+        }
+    }
     async function carregarEventos() {
         try {
             loading.value = true
@@ -147,23 +163,97 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
         loading.value = false;
         }
     }
+    async function receberCartela(gestaoCartelaCodigo: string, gestaoCodigo: number, receberCartela: ReceberCartelaRequest) {
+        try {
+        loading.value = true;
+        await gestaoCartelaService.receberCartela(gestaoCartelaCodigo, gestaoCodigo, receberCartela);
+        notify.notifySuccess('Cartela recebida com sucesso!');
+        } catch (error) {
+        const err = error as AxiosError<ErrorApi>;
+        notify.notifyErrorResponseAPI(err?.response?.data);
+        throw error;
+        } finally {
+        loading.value = false;
+        }
+    }
+    async function informarSorteada(gestaoCartelaCodigo: string, gestaoCodigo: number, receberCartela: ReceberCartelaRequest) {
+        try {
+        loading.value = true;
+        await gestaoCartelaService.informarSorteada(gestaoCartelaCodigo, gestaoCodigo, receberCartela);
+        notify.notifySuccess('Cartela sorteada informada com sucesso!');
+        carregarCarteiraPorId();
+        } catch (error) {
+        const err = error as AxiosError<ErrorApi>;
+        notify.notifyErrorResponseAPI(err?.response?.data);
+        throw error;
+        } finally {
+        loading.value = false;
+        }
+    }
+    async function informarGanhadora(gestaoCartelaCodigo: string, gestaoCodigo: number, receberCartela: ReceberCartelaRequest) {
+        try {
+        loading.value = true;
+        await gestaoCartelaService.informarGanhador(gestaoCartelaCodigo, gestaoCodigo, receberCartela);
+        notify.notifySuccess('Cartela ganhadora informada com sucesso!');
+        } catch (error) {
+        const err = error as AxiosError<ErrorApi>;
+        notify.notifyErrorResponseAPI(err?.response?.data);
+        throw error;
+        } finally {
+        loading.value = false;
+        }
+    }
+    async function devolver(gestaoCartelaCodigo: string, gestaoCodigo: number, devolver: DevolverCartelaRequest) {
+        try {
+        loading.value = true;
+        await gestaoCartelaService.devolver(gestaoCartelaCodigo, gestaoCodigo, devolver);
+        notify.notifySuccess('Cartela devolvida com sucesso!');
+        } catch (error) {
+        const err = error as AxiosError<ErrorApi>;
+        notify.notifyErrorResponseAPI(err?.response?.data);
+        throw error;
+        } finally {
+        loading.value = false;
+        }
+    }
+    async function devolverTodasCartelas(gestaoCartelaCodigo: string) {
+        try {
+        loading.value = true;
+        await gestaoCartelaService.devolverTodasCartelas(gestaoCartelaCodigo);
+        notify.notifySuccess('Cartelas devolvidas com sucesso!');
+        } catch (error) {
+        const err = error as AxiosError<ErrorApi>;
+        notify.notifyErrorResponseAPI(err?.response?.data);
+        throw error;
+        } finally {
+        loading.value = false;
+        }
+    }
 
     return {
         eventos,
         loading,
+        cartelas,
+        devolver,
         empresas,
         pagination,
         vendedores,
         gestaoCartela,
+        receberCartela,
         carregarEventos,
+        carregarCartelas,
         carregarVendedor,
         carregarEmpresas,
         eventosFiltrados,
+        informarSorteada,
+        cartelasFiltradas,
+        informarGanhadora,
         empresasFiltradas,
         vendedoresFiltrados,
         criarGestaoCartela,
         excluirGestaoCartela,
         carregarCarteiraPorId,
+        devolverTodasCartelas,
         atualizarGestaoCartela,
         gestaoCartelasPaginados,
         getGestaoCartelaPaginado,

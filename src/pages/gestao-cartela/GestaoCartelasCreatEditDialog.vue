@@ -9,7 +9,7 @@
     >
       <q-card class="q-dialog-plugin" style="width: 700px; max-width: 80vw;">
         <q-card-section class="row items-center q-pb-none q-px-lg">
-          <div class="text-h6">{{ isEdit ? 'Editar' : 'Nova' }} Cartela</div>
+          <div class="text-h6">{{ isEdit ? 'Editar' : 'Nova' }} Gestão de Cartela</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -25,6 +25,27 @@
                   v-model="form.vendedor as VendedorRequest" 
                   :rules="[(val: any) => !!val || 'Vendedor é obrigatório']"
                   clearable />
+              </div>
+              <div class="col-md-9 col-12">
+                <SelectEvento
+                  label="Evento *"
+                  v-model:items-filtrados="gestaoCartelaStore.eventosFiltrados"
+                  v-model:items="gestaoCartelaStore.eventos"
+                  v-model="form.evento as EventoResponse" 
+                  :rules="[(val: any) => !!val || 'Evento é obrigatório']"
+                  clearable />
+              </div>
+              <div class="col-md-3 col-12">
+                <q-select
+                    dense
+                    outlined
+                    emit-value
+                    map-options
+                    v-model="form.ativo"
+                    :options="ativo"
+                    label="Ativo *"
+                    :rules="[val => !!val || 'Ativo é obrigatório']"
+                />
               </div>
               <div class="col-md-4 col-12">
                 <q-input
@@ -60,27 +81,6 @@
                   outlined
                   dense
                 />
-              </div>
-              <div class="col-md-4 col-12">
-                <q-select
-                    dense
-                    outlined
-                    emit-value
-                    map-options
-                    v-model="form.ativo"
-                    :options="ativo"
-                    label="Ativo *"
-                    :rules="[val => !!val || 'Ativo é obrigatório']"
-                />
-              </div>
-              <div class="col-md-8 col-12">
-                <SelectEvento
-                  label="Evento *"
-                  v-model:items-filtrados="gestaoCartelaStore.eventosFiltrados"
-                  v-model:items="gestaoCartelaStore.eventos"
-                  v-model="form.evento as EventoResponse" 
-                  :rules="[(val: any) => !!val || 'Evento é obrigatório']"
-                  clearable />
               </div>
 
               <div class="col-12">
@@ -123,6 +123,7 @@ import { StatusCartela } from 'src/model/status-cartela.enum';
 import { VendedorRequest } from 'src/model/vendedor.interface';
 import SelectEvento from 'src/components/select/SelectEvento.vue';
 import SelectVendedor from 'src/components/select/SelectVendedor.vue';
+import SelectCartela from 'src/components/select/SelectCartela.vue';
 import { useGestaoCartelaStore } from 'src/stores/gestao-cartela.store';
 import { GestaoCartelaRequest } from 'src/model/gestao-cartela.interfave';
 
@@ -139,12 +140,12 @@ const emit = defineEmits<{
   'update:modelValue': [value: boolean]
 }>();
 
-
 const gestaoCartelaStore = useGestaoCartelaStore();
 
-onMounted(async () => {
-  await gestaoCartelaStore.carregarEventos();
-  await gestaoCartelaStore.carregarVendedor();
+onMounted(() => {
+  gestaoCartelaStore.carregarEventos();
+  gestaoCartelaStore.carregarVendedor();
+  gestaoCartelaStore.carregarCartelas();
 });
 
 const isEdit = computed(() => !!props.gestaoCartela?.codigo);

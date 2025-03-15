@@ -17,7 +17,7 @@
                           v-if="!$q.screen.lt.md"
                           v-model:isGrid="isGridView"
                         />
-                        <q-btn color="primary" label="Nova Cartela" @click="openDialog()" class="q-ml-sm" />
+                        <q-btn color="primary" label="Nova Gestao de Cartela" @click="openDialog()" class="q-ml-sm" />
                     </div>
                 </template>
 
@@ -88,7 +88,7 @@
                 </template>
             </q-table>
         </div>
-        <GestaoCartelasDialog
+        <GestaoCartelasCreatEditDialog
             v-model="showDialog"
             :gestao-cartela="gestaoCartelaStore.gestaoCartela"
         />
@@ -103,7 +103,7 @@
 import { QTableColumn, useQuasar } from 'quasar';
 import { ref, onMounted } from 'vue';
 import { StatusCartela } from 'src/model/status-cartela.enum';
-import GestaoCartelasDialog from './GestaoCartelasDialog.vue';
+import GestaoCartelasCreatEditDialog from './GestaoCartelasCreatEditDialog.vue';
 import GestaoCartelasViewDialog from './GestaoCartelasViewDialog.vue';
 import { useGestaoCartelaStore } from 'src/stores/gestao-cartela.store';
 import ButtonToggleView from 'src/components/button/ButtonToggleView.vue';

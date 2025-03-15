@@ -6,6 +6,10 @@ export const cartelaService = {
     return await useApi('/api/v1/cartelas').list({ filter, page, size, order, coluna });
   },
 
+  async listAll(): Promise<CartelaResponse[]> {
+    return await useApi('/api/v1/cartelas/todos').list();
+  },
+
   async create(request: CartelaRequest): Promise<CartelaResponse> {
     return await useApi('/api/v1/cartelas').post(request);
   },

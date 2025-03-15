@@ -4,7 +4,7 @@
         outlined
         v-model="model"
         use-input
-        option-label="descricao"
+        :option-label="(item) => `${item.descricao} - ${item.dataInicio} - ${item.dataFinal} - ${item.empresa.pessoa.nome}`"
         input-debounce="0"
         label="Eventos"
         :options="options"

@@ -17,6 +17,10 @@ export default function useApi(url: string) {
     const { data } = await api.delete(`${url}/${codigo}`);
     return data;
   };
+  const removeCustom = async () => {
+    const { data } = await api.delete(`${url}`);
+    return data;
+  };
 
   const patch = async (param: any) => {
     const { data } = await api.patch(`${url}`, param);
@@ -29,5 +33,6 @@ export default function useApi(url: string) {
     patch,
     update,
     remove,
+    removeCustom
   };
 }
