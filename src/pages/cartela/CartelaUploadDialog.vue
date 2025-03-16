@@ -2,14 +2,16 @@
     <q-dialog v-model="model" persistent>
         <q-card class="minimo-dialog">
             <q-form @submit.prevent="submit">
-                <q-card-section>
-                    <q-card-title>
-                        Upload Cartela
+                <q-card-section class="row items-center q-pb-none q-px-lg">
+                    <q-card-title class="text-h6">
+                        Upload da Cartela
                     </q-card-title>
+                    <q-space />
+                    <q-btn icon="close" flat round dense v-close-popup />
                 </q-card-section>
                 <q-card-section>
                     <div class="row q-col-gutter-md">
-                      <div class="col-12">
+                      <div class="col-md-4 col-12">
                         <q-select
                           dense
                           outlined
@@ -21,16 +23,7 @@
                           :rules="[val => !!val || 'Tipo é obrigatório']"
                         />
                       </div>
-                      <div class="col-12">
-                        <SelectEvento
-                          label="Evento *"
-                          v-model:items-filtrados="cartelaStore.eventosFiltrados"
-                          v-model:items="cartelaStore.eventos"
-                          v-model="form.evento as EventoResponse" 
-                          :rules="[(val: any) => !!val || 'Evento é obrigatório']"
-                          clearable />
-                      </div>
-                      <div class="col-12">
+                      <div class="col-md-8 col-12">
                         <q-file
                           dense
                           outlined
@@ -44,6 +37,15 @@
                           </template>
                         </q-file>
                         
+                      </div>
+                      <div class="col-12">
+                        <SelectEvento
+                          label="Evento *"
+                          v-model:items-filtrados="cartelaStore.eventosFiltrados"
+                          v-model:items="cartelaStore.eventos"
+                          v-model="form.evento" 
+                          :rules="[(val: any) => !!val || 'Evento é obrigatório']"
+                          clearable />
                       </div>
                       <div class="col-12">
                         <InputMoeda
