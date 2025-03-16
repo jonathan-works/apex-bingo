@@ -11,6 +11,7 @@ import { VendedorResponse } from 'src/model/vendedor.interface'
 import { vendedorService } from 'src/services/vendedor.service'
 import { cartelaService } from 'src/services/cartela.service'
 import { CartelaFilter, CartelaRequest, CartelaResponse } from 'src/model/cartela.interface'
+import { UploadRequest } from 'src/model/upload.interface'
 
 const notify = useNotify()
 
@@ -150,6 +151,21 @@ export const useCartelaStore = defineStore('cartela', () => {
         }
     }
 
+    async function uploadCartela(uploadRequest: UploadRequest) {
+        try {
+        loading.value = true;
+        await cartelaService.uploadCartela(uploadRequest);
+        await getCartelaPaginado();
+        notify.notifySuccess('Upload realizado com sucesso!');
+        } catch (error) {
+        const err = error as AxiosError<ErrorApi>;
+        notify.notifyErrorResponseAPI(err?.response?.data);
+        throw error;
+        } finally {
+        loading.value = false;
+        }
+    }
+
     return {
         eventos,
         loading,
@@ -158,6 +174,7 @@ export const useCartelaStore = defineStore('cartela', () => {
         pagination,
         vendedores,
         criarCartela,
+        uploadCartela,
         excluirCartela,
         carregarEventos,
         atualizarCartela,

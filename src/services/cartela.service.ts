@@ -1,5 +1,6 @@
 import useApi from 'src/composable/UseApi';
 import { CartelaFilter, CartelaRequest, CartelaResponse } from 'src/model/cartela.interface';
+import { UploadRequest, UploadResponse } from 'src/model/upload.interface';
 
 export const cartelaService = {
   async list(filter: CartelaFilter | null = null, page = 0, size = 10, order = 'desc', coluna = 'codigo'): Promise<PageGestaoRifaResponse> {
@@ -24,5 +25,9 @@ export const cartelaService = {
 
   async findById(id: string): Promise<CartelaResponse> {
     return await useApi(`/api/v1/cartelas/${id}`).list();
+  },
+
+  async uploadCartela(request: UploadRequest): Promise<UploadResponse> {
+    return await useApi('/api/v1/cartelas/upload').post(request);
   }
 };

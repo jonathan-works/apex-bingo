@@ -13,7 +13,15 @@
             >
                 <template v-slot:top-right>
                     <div class="row items-center">
-                        <ButtonToggleView
+                      <q-btn
+                        flat
+                        round
+                        icon="cloud_upload"
+                        @click="openDialogUpload"
+                      >
+                        <q-tooltip>Importar cartelas</q-tooltip>
+                      </q-btn>
+                      <ButtonToggleView
                         v-if="!$q.screen.lt.md"
                         v-model:isGrid="isGridView"
                         />
@@ -83,6 +91,9 @@
             v-model="showDialog"
             :cartela="cartelaStore.cartela"
         />
+        <CartelaUploadDialog
+          v-model="showDialogUpload"
+        />
     </q-page>
 </template>
 
@@ -94,6 +105,7 @@ import { useCartelaStore } from 'src/stores/cartela.store';
 import { CartelaResponse } from 'src/model/cartela.interface';
 import { StatusCartela } from 'src/model/status-cartela.enum';
 import CartelaDialog from 'src/pages/cartela/CartelaDialog.vue';
+import CartelaUploadDialog from 'src/pages/cartela/CartelaUploadDialog.vue';
 import ButtonToggleView from 'src/components/button/ButtonToggleView.vue';
 
 const $q = useQuasar();
@@ -101,6 +113,7 @@ const cartelaStore = useCartelaStore();
 
 const isGridView = ref(false);
 const showDialog = ref(false);
+const showDialogUpload = ref(false);
 
 interface Column {
   name: string;
@@ -132,6 +145,9 @@ async function onRequest(props: any) {
 function openDialog(cartela?: CartelaResponse) {
   cartelaStore.cartela = cartela ? { ...cartela } : null;
   showDialog.value = true;
+}
+function openDialogUpload() {
+  showDialogUpload.value = true;
 }
 
 function editar(cartela: CartelaResponse) {
