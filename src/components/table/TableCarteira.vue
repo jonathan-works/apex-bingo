@@ -61,6 +61,7 @@ import ReceberCartelaDialog from "src/components/dialog/ReceberCartelaDialog.vue
 import InformarSorteadaDialog from "src/components/dialog/InformarSorteadaDialog.vue";
 import InformarGanhadoraDialog from "src/components/dialog/InformarGanhadoraDialog.vue";
 import DevolverCartelaDialog from "src/components/dialog/DevolverCartelaDialog.vue";
+import { formatarParaReal } from "src/utils/format";
 
 const cartelaRifaCodigo = ref(0);
 const attrs = useAttrs();
@@ -74,11 +75,11 @@ const showDialogDevolverCartela = ref(false);
 const columns: QTableColumn[] = [
     { name: 'numeroBloco', required: true, label: 'N. Bloco', align: 'left', field: 'numeroBloco', sortable: false },
     { name: 'cartelaRifa', required: true, label: 'Num.', align: 'left', field: (row: GestaoCartelaItemResponse) => row.cartelaRifa?.numero, sortable: false },
-    { name: 'cartelaRifa', required: true, label: 'Valor', align: 'left', field: (row: GestaoCartelaItemResponse) => row.cartelaRifa?.valor, sortable: false },
+    { name: 'cartelaRifa', required: true, label: 'Valor', align: 'left', field: (row: GestaoCartelaItemResponse) => formatarParaReal(row.cartelaRifa?.valor as number), sortable: false },
     { name: 'cartelaRifa', required: true, label: 'Dt. Início', align: 'left', field: (row: GestaoCartelaItemResponse) => row.cartelaRifa?.evento.dataInicio, sortable: false },
     { name: 'cartelaRifa', required: true, label: 'Dt. Fim', align: 'left', field: (row: GestaoCartelaItemResponse) => row.cartelaRifa?.evento.dataFinal, sortable: false },
     { name: 'tipo', required: true, label: 'Tipo', align: 'left', field: (row: GestaoCartelaItemResponse) => Tipo[row.tipo as keyof typeof Tipo], sortable: false },
-    { name: 'status', label: 'Status', align: 'center', field: (row: GestaoCartelaItemResponse) => StatusCartela[row.tipo as keyof typeof StatusCartela], sortable: false },
+    { name: 'status', label: 'Status', align: 'center', field: (row: GestaoCartelaItemResponse) => StatusCartela[row.cartelaRifa?.status as keyof typeof StatusCartela], sortable: false },
     { name: 'actions', label: 'Ações', field: 'actions', sortable: false }
 ];
 
