@@ -27,17 +27,15 @@
                   clearable />
               </div>
               <div class="col-md-3 col-12">
-                <q-input
+                <InputMoeda
                   v-model="form.valor"
                   label="Valor *"
                   :rules="[
-                    val => !!val || 'Valor é obrigatória',
-                    val => val.length >= 1 || 'Mínimo de 1 caracteres'
-                  ]"
-                  type="number"
+                      val => !!val || 'Valor é obrigatória',
+                    ]"
                   outlined
                   dense
-                />
+                  />
               </div>
               <div class="col-md-3 col-12">
                 <q-input
@@ -107,6 +105,7 @@ import { CartelaRequest } from 'src/model/cartela.interface';
 import { StatusCartela } from 'src/model/status-cartela.enum';
 import { VendedorRequest } from 'src/model/vendedor.interface';
 import SelectEvento from 'src/components/select/SelectEvento.vue';
+import InputMoeda from 'src/components/input/InputMoeda.vue';
 import { GestaoCartelaRequest } from 'src/model/gestao-cartela.interfave';
 
 interface Props {
