@@ -2,7 +2,6 @@
     <q-page padding>
         <div class="q-pa-md">
             <q-table
-                title="Gestão de Cartelas"
                 :rows="gestaoCartelaStore.gestaoCartelasPaginados"
                 :columns="columns"
                 row-key="codigo"
@@ -11,13 +10,114 @@
                 @request="onRequest"
                 :grid="$q.screen.lt.md || isGridView"
             >
-                <template v-slot:top-right>
-                    <div class="row items-center">
+                <template v-slot:top="props">
+                    <div class="row q-gutter-y-md full-width">
+                      <div class="col-12 row">
+                        <div class="col-2 q-table__title">Gestão de Cartelas</div>
+
+                        <q-space />
+
+                        <q-btn
+                          flat
+                          round
+                          icon="filter_alt"
+                          @click="toggleFilter"
+                        >
+                          <q-tooltip>Mais filtros</q-tooltip>
+                        </q-btn>
+
                         <ButtonToggleView
                           v-if="!$q.screen.lt.md"
                           v-model:isGrid="isGridView"
                         />
                         <q-btn color="primary" label="Nova Gestao de Cartela" @click="openDialog()" class="q-ml-sm" />
+                      </div>
+                      <div class="col-12" v-if="filterShow">
+                        <div class="row q-col-gutter-md">
+                          <div class="col-md-1 col-12">
+                            <q-input
+                              v-model="filter.numero"
+                              label="Número"
+                              type="number"
+                              outlined
+                              dense
+                              clearable
+                              @blur="onRequest"
+                              @keyup.enter="onRequest"
+                              @clear="onRequest"
+                            />
+                          </div>
+                          <div class="col-md-2 col-12">
+                            <q-input
+                              v-model="filter.nome"
+                              label="Evento"
+                              outlined
+                              dense
+                              clearable
+                              @blur="onRequest"
+                              @keyup.enter="onRequest"
+                              @clear="onRequest"
+                            />
+                          </div>
+                          <div class="col-md-2 col-12">
+                            <q-input
+                              v-model="filter.documento"
+                              label="Documento"
+                              outlined
+                              dense
+                              clearable
+                              @blur="onRequest"
+                              @keyup.enter="onRequest"
+                              @clear="onRequest"
+                            />
+                          </div>
+                          <div class="col-md-1 col-12">
+                              <q-select
+                                dense
+                                outlined
+                                emit-value
+                                map-options
+                                v-model="filter.tipo"
+                                :options="tipo"
+                                label="Tipo"
+                                clearable
+                                @update:model-value="onRequest"
+                                @keyup.enter="onRequest"
+                                @clear="onRequest"
+                            />
+                          </div>
+                          <div class="col-md-2 col-12">
+                              <q-select
+                                dense
+                                outlined
+                                emit-value
+                                map-options
+                                v-model="filter.statusCartela"
+                                :options="status"
+                                label="Status"
+                                clearable
+                                @update:model-value="onRequest"
+                                @keyup.enter="onRequest"
+                                @clear="onRequest"
+                            />
+                          </div>
+                          <div class="col-md-4 col-12">
+                              <SelectEvento
+                                label="Evento"
+                                emit-value
+                                map-options
+                                option-value="codigo"
+                                v-model:items-filtrados="gestaoCartelaStore.eventosFiltrados"
+                                v-model:items="gestaoCartelaStore.eventos"
+                                v-model="filter.codigoEvento" 
+                                clearable 
+                                @update:model-value="onRequest"
+                                @keyup.enter="onRequest"
+                                @clear="onRequest"
+                              />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                 </template>
 
@@ -100,6 +200,7 @@
 </template>
 
 <script setup lang="ts">
+import { Tipo } from 'src/model/tipo.enum';
 import { QTableColumn, useQuasar } from 'quasar';
 import { ref, onMounted } from 'vue';
 import { StatusCartela } from 'src/model/status-cartela.enum';
@@ -107,17 +208,20 @@ import GestaoCartelasCreatEditDialog from './GestaoCartelasCreatEditDialog.vue';
 import GestaoCartelasViewDialog from './GestaoCartelasViewDialog.vue';
 import { useGestaoCartelaStore } from 'src/stores/gestao-cartela.store';
 import ButtonToggleView from 'src/components/button/ButtonToggleView.vue';
-import { GestaoCartelaResponse } from 'src/model/gestao-cartela.interfave';
+import SelectEvento from 'src/components/select/SelectEvento.vue';
+import { GestaoCartelaFilter, GestaoCartelaResponse } from 'src/model/gestao-cartela.interfave';
 
 const $q = useQuasar();
 const gestaoCartelaStore = useGestaoCartelaStore();
 const isGridView = ref(false);
 const showDialog = ref(false);
 const showDialogView = ref(false);
-const filter = ref(null);
+const filter = ref<GestaoCartelaFilter>({});
+const filterShow = ref(false);
+const tipo = Object.keys(Tipo).map((key) => ({ label: Tipo[key as keyof typeof Tipo], value: key as string }));
+const status = Object.keys(StatusCartela).map((key) => ({ label: StatusCartela[key as keyof typeof StatusCartela], value: key as string }));
 
 const columns: QTableColumn[] = [
-    // { name: 'codigo', required: true, label: 'Código', align: 'left', field: 'codigo', sortable: true },
     { name: 'dataCadastro', required: true, label: 'Data de Cadastro', align: 'left', field: 'dataCadastro', sortable: true },
     { name: 'evento', label: 'Evento', field: (row: GestaoCartelaResponse) => row.evento?.descricao, sortable: true },
     { name: 'status', label: 'Status', align: 'center', field: (row: GestaoCartelaResponse) => StatusCartela[row.status as keyof typeof StatusCartela], sortable: true },
@@ -126,13 +230,22 @@ const columns: QTableColumn[] = [
     { name: 'actions', label: 'Ações', field: 'actions', sortable: false }
 ];
 
-onMounted(async () => {
-  await gestaoCartelaStore.getGestaoCartelaPaginado();
+onMounted(() => {
+  gestaoCartelaStore.getGestaoCartelaPaginado();
+  gestaoCartelaStore.carregarEventos();
 });
 
 async function onRequest(props: any) {
-  gestaoCartelaStore.pagination = props.pagination;
-  await gestaoCartelaStore.getGestaoCartelaPaginado();
+  if(props?.pagination){
+    gestaoCartelaStore.pagination = props.pagination;
+  }
+  if(Object.keys(filter.value).length > 0){
+    gestaoCartelaStore.filter = filter.value as GestaoCartelaFilter;
+  }
+  await gestaoCartelaStore.getGestaoCartelaPaginado(
+    gestaoCartelaStore.pagination.page, 
+    gestaoCartelaStore.pagination.rowsPerPage
+  );
 }
 
 function openDialog(gestaoCartela?: GestaoCartelaResponse) {
@@ -172,12 +285,14 @@ function confirmarExclusao(gestaoCartela: GestaoCartelaResponse) {
       await gestaoCartelaStore.excluirGestaoCartela(Number(gestaoCartela.codigo));
       await gestaoCartelaStore.getGestaoCartelaPaginado(
         gestaoCartelaStore.pagination.page, 
-        gestaoCartelaStore.pagination.rowsPerPage, 
-        filter.value
+        gestaoCartelaStore.pagination.rowsPerPage
       );
     } catch (error) {
       // Erro já tratado no store
     }
   });
+}
+function toggleFilter(){
+  filterShow.value = !filterShow.value;
 }
 </script>

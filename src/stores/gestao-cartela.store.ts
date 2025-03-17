@@ -10,7 +10,7 @@ import { empresaService } from 'src/services/empresa.service'
 import { VendedorResponse } from 'src/model/vendedor.interface'
 import { vendedorService } from 'src/services/vendedor.service'
 import { gestaoCartelaService } from 'src/services/gestao-cartela.service'
-import { GestaoCartelaRequest, GestaoCartelaResponse } from 'src/model/gestao-cartela.interfave'
+import { GestaoCartelaFilter, GestaoCartelaRequest, GestaoCartelaResponse } from 'src/model/gestao-cartela.interfave'
 import { CartelaResponse, DevolverCartelaRequest, ReceberCartelaRequest } from 'src/model/cartela.interface'
 import { cartelaService } from 'src/services/cartela.service'
 
@@ -22,6 +22,7 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
         rowsPerPage: 10,
         rowsNumber: 0
     });
+
     const gestaoCartela = ref<GestaoCartelaResponse | null>(null);
     const gestaoCartelasPaginados = ref<GestaoCartelaResponse[]>([]);
     const empresas = ref<EmpresaResponse[]>([]);
@@ -33,14 +34,16 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
     const vendedores = ref<VendedorResponse[]>([]);
     const vendedoresFiltrados = ref<VendedorResponse[]>([]);
     const loading = ref(false);
+    const filter = ref<GestaoCartelaFilter|null>(null);
 
-    async function getGestaoCartelaPaginado(page: number = 1, rowsPerPage: number = 10, filter = null) {
+    async function getGestaoCartelaPaginado(page: number = 1, rowsPerPage: number = 10) {
         try {
         loading.value = true
-        const data = await gestaoCartelaService.list(filter, page - 1 , rowsPerPage);
+        const data = await gestaoCartelaService.list(filter.value, page - 1 , rowsPerPage);
         gestaoCartelasPaginados.value = data.content
         pagination.value.rowsNumber = data.totalElements
         } catch (error: unknown) {
+            debugger
         const err = error as AxiosError<ErrorApi>
         notify.notifyErrorResponseAPI(err?.response?.data)
         } finally {
@@ -231,6 +234,7 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
     }
 
     return {
+        filter,
         eventos,
         loading,
         cartelas,

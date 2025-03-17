@@ -35,13 +35,13 @@ export interface GestaoCartelaItemResponse{
 }
 
 export interface GestaoCartelaFilter{
-    numero: number;
-    nome: string;
-    documento: string;
-    statusCartela: 'D' | 'R' | 'P' | 'E' | 'C' | 'S' | 'G';
-    tipo: 'C' | 'D';
-    dataInicio: Date;
-    dataFinal: Date;
+    numero?: number;
+    nome?: string;
+    documento?: string;
+    statusCartela?: 'D' | 'R' | 'P' | 'E' | 'C' | 'S' | 'G';
+    tipo?: 'C' | 'D';
+    dataInicio?: Date;
+    dataFinal?: Date;
 }
 
 export interface PageGestaoCartelaResponse extends PageResponse<GestaoCartelaResponse[]>{}

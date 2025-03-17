@@ -3,8 +3,15 @@ import { DevolverCartelaRequest, ReceberCartelaRequest } from 'src/model/cartela
 import { GestaoCartelaFilter, GestaoCartelaItemResponse, GestaoCartelaRequest, GestaoCartelaResponse, PageGestaoCartelaResponse } from 'src/model/gestao-cartela.interfave';
 
 export const gestaoCartelaService = {
-  async list(filter: GestaoCartelaFilter| null = null, page = 0, size = 10, order = 'desc', coluna = 'codigo'): Promise<PageGestaoCartelaResponse> {
-    return await useApi('/api/v1/gestao-cartelas').list({ filter, page, size, order, coluna });
+  async list(filter: GestaoCartelaFilter | null = null, page = 0, size = 10, order = 'desc', coluna = 'codigo'): Promise<PageGestaoCartelaResponse> {
+
+    let request = { page, size, order, coluna };
+    
+    if(filter !== null) {
+      request = { ...request, ...filter };
+    }
+
+    return await useApi('/api/v1/gestao-cartelas').list(request);
   },
 
   async create(request: GestaoCartelaRequest): Promise<GestaoCartelaResponse> {
