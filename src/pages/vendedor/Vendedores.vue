@@ -82,7 +82,7 @@
       </div>
       <VendedorDialog
           v-model="showDialog"
-          :vendedor="vendedorStore.vendedor as VendedorResponse"
+          :vendedor="vendedorStore.vendedor"
       />
   </q-page>
 </template>

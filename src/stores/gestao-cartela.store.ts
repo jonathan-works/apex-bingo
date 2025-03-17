@@ -43,7 +43,6 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
         gestaoCartelasPaginados.value = data.content
         pagination.value.rowsNumber = data.totalElements
         } catch (error: unknown) {
-            debugger
         const err = error as AxiosError<ErrorApi>
         notify.notifyErrorResponseAPI(err?.response?.data)
         } finally {
