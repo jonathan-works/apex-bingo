@@ -9,11 +9,12 @@
             row-key="codigo"
             dense
             :filter="filter"
+            :filter-method="filterMethod"
             v-bind="$attrs"
         >
         
             <template v-slot:top-right>
-                <q-input outlined dense clearable debounce="300" v-model="filter" placeholder="Pesquisar">
+                <q-input class="full-width" outlined dense clearable debounce="300" v-model="filter" placeholder="Pesquisar Num./Status">
                     <template v-slot:append>
                         <q-icon name="search" />
                     </template>
@@ -118,5 +119,9 @@ function informarGanhadora(codigo: number) {
 function devolver(codigo: number) {
     cartelaRifaCodigo.value = codigo;
     showDialogDevolverCartela.value = true;
+}
+
+function filterMethod(rows: Array<GestaoCartelaItemResponse>, terms: String | Object, cols: Array<QTableColumn>, getCellValue: (col:QTableColumn, row: GestaoCartelaItemResponse) => any): Array<GestaoCartelaItemResponse>{
+    return rows.filter(x => x.cartelaRifa?.numero === Number(terms) || StatusCartela[x.cartelaRifa?.status as keyof typeof StatusCartela].toLowerCase().includes(terms.toString().toLowerCase())); 
 }
 </script>
