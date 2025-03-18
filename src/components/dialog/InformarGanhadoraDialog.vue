@@ -70,7 +70,7 @@ async function submit() {
 
     const codigo = gestaoCartelaStore.gestaoCartela?.codigo as string;
     await gestaoCartelaStore.informarGanhadora(codigo, props.codigo, receberCartelaRequest);
-    await gestaoCartelaStore.carregarCarteiraPorId();
+    await gestaoCartelaStore.carregarCarteiraPorIdStatusNumber();
     model.value = false
 }
 </script>

@@ -3,22 +3,51 @@
         <q-table
             flat 
             bordered
-            title="Cartelas"
             :separator="vertical"
             :columns="columns"
+            :loading="gestaoCartelaStore.loading"
             row-key="codigo"
             dense
-            :filter="filter"
-            :filter-method="filterMethod"
             v-bind="$attrs"
         >
-        
-            <template v-slot:top-right>
-                <q-input class="full-width" outlined dense clearable debounce="300" v-model="filter" placeholder="Pesquisar Num./Status">
-                    <template v-slot:append>
-                        <q-icon name="search" />
-                    </template>
-                </q-input>
+            <template v-slot:top>
+                <div class="row q-gutter-y-md full-width">
+                    <div class="col-12 row">
+                        <div class="col-md-6 col-12">
+                            <div class="col-2 q-table__title">Cartelas</div>
+                        </div>
+                        <div class="col-md col-12 row justify-end q-col-gutter-x-md">
+                            <div class="col-md-6 col-12">
+                                <q-input 
+                                    outlined 
+                                    dense 
+                                    clearable 
+                                    type="number" 
+                                    v-model="gestaoCartelaStore.numeroCartelaFilter" 
+                                    placeholder="Por Número"
+                                    @blur="onRequest"
+                                    @keyup.enter="onRequest"
+                                    @clear="onRequest"
+                                />
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <q-select
+                                    dense
+                                    outlined
+                                    emit-value
+                                    map-options
+                                    v-model="gestaoCartelaStore.statusFilter"
+                                    :options="status"
+                                    label="Status"
+                                    clearable
+                                    @update:model-value="onRequest"
+                                    @keyup.enter="onRequest"
+                                    @clear="onRequest"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </template>
             <template v-slot:body-cell-actions="props">
                 <q-td :props="props">
@@ -82,10 +111,12 @@ const showDialogInformarSorteada = ref(false);
 const showDialogInformarGanhadora = ref(false);
 const showDialogDevolverCartela = ref(false);
 const filter = ref('');
+const filtroStatus = ref(null);
+const status = Object.keys(StatusCartela).map((key) => ({ label: StatusCartela[key as keyof typeof StatusCartela], value: key as string }));
 
 const columns: QTableColumn[] = [
     { name: 'numeroBloco', required: true, label: 'N. Bloco', align: 'left', field: 'numeroBloco', sortable: true },
-    { name: 'cartelaRifa', required: true, label: 'Num.', align: 'left', field: (row: GestaoCartelaItemResponse) => row.cartelaRifa?.numero, sortable: true },
+    { name: 'cartelaRifa', required: true, label: 'Núm.', align: 'left', field: (row: GestaoCartelaItemResponse) => row.cartelaRifa?.numero, sortable: true },
     { name: 'cartelaRifa', required: true, label: 'Valor', align: 'left', field: (row: GestaoCartelaItemResponse) => formatarParaReal(row.cartelaRifa?.valor as number), sortable: true },
     { name: 'cartelaRifa', required: true, label: 'Dt. Início', align: 'left', field: (row: GestaoCartelaItemResponse) => row.cartelaRifa?.evento.dataInicio, sortable: true },
     { name: 'cartelaRifa', required: true, label: 'Dt. Fim', align: 'left', field: (row: GestaoCartelaItemResponse) => row.cartelaRifa?.evento.dataFinal, sortable: true },
@@ -100,6 +131,10 @@ const pagination = ref({
     page: 1,
     rowsPerPage: 10
 })
+
+function onRequest(){
+    gestaoCartelaStore.carregarCarteiraPorIdStatusNumber();
+}
 
 function receberCartela(codigo: number) {
     cartelaRifaCodigo.value = codigo;

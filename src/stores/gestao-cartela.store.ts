@@ -35,6 +35,8 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
     const vendedoresFiltrados = ref<VendedorResponse[]>([]);
     const loading = ref(false);
     const filter = ref<GestaoCartelaFilter|null>(null);
+    const statusFilter = ref<string|null>(null);
+    const numeroCartelaFilter = ref<number|null>(null);
 
     async function getGestaoCartelaPaginado(page: number = 1, rowsPerPage: number = 10) {
         try {
@@ -147,6 +149,19 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
         loading.value = false
         }
     }
+    async function carregarCarteiraPorIdStatusNumber() {
+        try {
+            loading.value = true
+            const codigo = gestaoCartela.value?.codigo as string;
+            const data = await gestaoCartelaService.findByIdStatusNumber(codigo, statusFilter.value, numeroCartelaFilter.value);
+            gestaoCartela.value = data
+        } catch (error: unknown) {
+        const err = error as AxiosError<ErrorApi>
+        notify.notifyErrorResponseAPI(err?.response?.data)
+        } finally {
+        loading.value = false
+        }
+    }
 
     async function excluirGestaoCartela(codigo: number) {
         try {
@@ -183,7 +198,6 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
         loading.value = true;
         await gestaoCartelaService.informarSorteada(gestaoCartelaCodigo, gestaoCodigo, receberCartela);
         notify.notifySuccess('Cartela sorteada informada com sucesso!');
-        carregarCarteiraPorId();
         } catch (error) {
         const err = error as AxiosError<ErrorApi>;
         notify.notifyErrorResponseAPI(err?.response?.data);
@@ -241,6 +255,7 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
         empresas,
         pagination,
         vendedores,
+        statusFilter,
         gestaoCartela,
         receberCartela,
         carregarEventos,
@@ -252,6 +267,7 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
         cartelasFiltradas,
         informarGanhadora,
         empresasFiltradas,
+        numeroCartelaFilter,
         vendedoresFiltrados,
         criarGestaoCartela,
         excluirGestaoCartela,
@@ -260,5 +276,6 @@ export const useGestaoCartelaStore = defineStore('gestao-cartela', () => {
         atualizarGestaoCartela,
         gestaoCartelasPaginados,
         getGestaoCartelaPaginado,
+        carregarCarteiraPorIdStatusNumber,
     }
 })

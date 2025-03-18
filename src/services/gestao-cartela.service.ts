@@ -46,5 +46,9 @@ export const gestaoCartelaService = {
 
   async findById(id: string): Promise<GestaoCartelaResponse> {
     return await useApi(`/api/v1/gestao-cartelas/${id}`).list();
+  },
+
+  async findByIdStatusNumber(id: string, status: string|null = null, numeroCartela: number|null = null): Promise<GestaoCartelaResponse> {
+    return await useApi(`/api/v1/gestao-cartelas/cartelas/${id}/gestao`).list({status, numeroCartela});
   }
 };

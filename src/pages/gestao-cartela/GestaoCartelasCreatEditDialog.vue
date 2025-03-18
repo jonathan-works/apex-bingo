@@ -164,7 +164,7 @@ watch(() => props.gestaoCartela, (newCartela, oudCartela) => {
   if (newCartela) {
     form.value = { ...newCartela };
     //if(newCartela.codigo !== oudCartela?.codigo) {
-    //  gestaoCartelaStore.carregarCarteiraPorId();
+    //  gestaoCartelaStore.carregarCarteiraPorIdStatusNumber();
     //}
   } else {
     form.value = {
