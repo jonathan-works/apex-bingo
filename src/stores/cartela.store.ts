@@ -167,6 +167,7 @@ export const useCartelaStore = defineStore('cartela', () => {
     }
 
     return {
+        filter,
         eventos,
         loading,
         cartela,
