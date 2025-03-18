@@ -158,7 +158,7 @@ const tiposPessoa = [
   { label: 'Pessoa Jurídica', value: 'JURIDICA' }
 ]
 
-watch(() => form.roles, (novo) => {
+watch(() => props.cliente, (novo) => {
   if (novo) {
       form.value = { ...novo } as ClienteResponse;
   } else {

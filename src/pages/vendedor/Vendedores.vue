@@ -37,7 +37,7 @@
                     </div>
 
                     <div class="col-md-auto col-12">
-                      <q-btn color="primary" label="Nova Cartela" @click="openDialog()" />
+                      <q-btn color="primary" label="Novo Vendedor" @click="openDialog()" />
                     </div>
                   </div>
                 </div>
@@ -133,7 +133,7 @@
       </div>
       <VendedorDialog
           v-model="showDialog"
-          :vendedor="vendedorStore.vendedor"
+          :vendedor="vendedorStore.vendedor as VendedorResponse"
       />
   </q-page>
 </template>
@@ -143,7 +143,7 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useVendedorStore } from 'src/stores/vendedor.store';
 import { VendedorFilter, VendedorResponse } from 'src/model/vendedor.interface';
-import VendedorDialog from 'src/pages/vendedor/VendedorDialog.vue';
+import VendedorDialog from 'src/components/dialog/VendedorDialog.vue';
 import { formatarDocumento, formatarTelefone } from 'src/utils/format';
 import ButtonToggleView from 'src/components/button/ButtonToggleView.vue';
 

@@ -38,7 +38,7 @@
                 </div>
 
                 <div class="col-md-auto col-12">
-                  <q-btn color="primary" label="Nova Cartela" @click="openDialog()" />
+                  <q-btn color="primary" label="Novo Cliente" @click="openDialog()" />
                 </div>
               </div>
             </div>
@@ -142,7 +142,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
-import ClienteDialog from './ClienteDialog.vue';
+import ClienteDialog from '../../components/dialog/ClienteDialog.vue';
 import { useClienteStore } from 'src/stores/cliente.store';
 import { ClienteFilter, ClienteResponse } from 'src/model/cliente.interface';
 import { formatarDocumento, formatarTelefone } from 'src/utils/format';

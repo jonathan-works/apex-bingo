@@ -57,7 +57,7 @@ export const useClienteStore = defineStore('cliente', () => {
         throw new Error('Código do cliente é obrigatório para atualização');
       }
       await clienteService.update(cliente.codigo, cliente);
-      await getClientes();
+      await getClientesPaginado();
       notify.notifySuccess('Cliente atualizado com sucesso!');
     } catch (error) {
       const err = error as AxiosError<ErrorApi>;

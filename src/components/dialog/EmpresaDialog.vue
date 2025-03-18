@@ -9,7 +9,7 @@
   >
     <q-card class="q-dialog-plugin" style="width: 700px; max-width: 80vw;">
       <q-card-section class="row items-center q-pb-none q-px-lg">
-        <div class="text-h6">{{ isEdit ? 'Editar' : 'Novo' }} Cliente</div>
+        <div class="text-h6">{{ isEdit ? 'Editar' : 'Novo' }} Empresa</div>
         <q-space />
         <q-btn icon="close" flat round dense v-close-popup />
       </q-card-section>
@@ -117,30 +117,31 @@
 
 <script setup lang="ts">
 import { TipoPessoa } from 'src/model/pessoa.interface';
-import { useClienteStore } from 'src/stores/cliente.store';
+import { useEmpresaStore } from 'src/stores/empresa.store';
 import { ClienteResponse } from 'src/model/cliente.interface';
 import { DocumentValidator } from 'src/utils/documentValidator';
 import { defineEmits, defineProps, computed, ref, watch } from 'vue';
+import { EmpresaResponse } from 'src/model/empresa.interface';
 
-const clienteStore = useClienteStore();
+const ermpresaStore = useEmpresaStore();
 
 const props = defineProps<{
   modelValue: boolean,
-  cliente?: ClienteResponse
+  empresa?: EmpresaResponse
 }>();
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
 }>();
 
-const isEdit = computed(() => !!props.cliente?.codigo);
+const isEdit = computed(() => !!props.empresa?.codigo);
 
 const form = ref<ClienteResponse>({
   codigo: undefined,
   pessoa: {
     codigo: undefined,
     nome: '',
-    tipoPessoa: 'FISICA',
+    tipoPessoa: 'JURIDICA',
     documento: '',
     dataNascimento: '',
     email: '',
@@ -154,20 +155,20 @@ const dataNascimento = computed({
 })
 
 const tiposPessoa = [
+  { label: 'Pessoa Jurídica', value: 'JURIDICA' },
   { label: 'Pessoa Física', value: 'FISICA' },
-  { label: 'Pessoa Jurídica', value: 'JURIDICA' }
 ]
 
-watch(() => form.roles, (novo) => {
+watch(() => props.empresa, (novo) => {
   if (novo) {
-      form.value = { ...novo } as ClienteResponse;
+      form.value = { ...novo } as EmpresaResponse;
   } else {
       form.value = {
         codigo: undefined,
         pessoa: {
           codigo: undefined,
           nome: '',
-          tipoPessoa: 'FISICA',
+          tipoPessoa: 'JURIDICA',
           documento: '',
           dataNascimento: '',
           email: '',
@@ -180,9 +181,9 @@ watch(() => form.roles, (novo) => {
 async function onSubmit() {
   try {
       if (isEdit.value) {
-          await clienteStore.atualizarCliente(form.value);
+          await ermpresaStore.atualizarEmpresa(form.value);
       } else {
-          await clienteStore.criarCliente(form.value);
+          await ermpresaStore.criarEmpresa(form.value);
       }
       emit('update:modelValue', false);
   } catch (error) {

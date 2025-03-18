@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import useNotify from 'src/composable/UseNotify'
 import { ErrorApi } from 'src/model/error.interface'
 import { empresaService } from 'src/services/empresa.service'
-import { EmpresaRequest, EmpresaResponse } from 'src/model/empresa.interface'
+import { EmpresaFilter, EmpresaRequest, EmpresaResponse } from 'src/model/empresa.interface'
 
 const notify = useNotify()
 
@@ -17,11 +17,12 @@ export const useEmpresaStore = defineStore('empresa', () => {
     const empresa = ref<EmpresaResponse | null>(null);
     const empresasPaginados = ref<EmpresaResponse[]>([]);
     const loading = ref(false);
+    const filter = ref<EmpresaFilter | null>(null);
 
-    async function getEmpresaPaginado(page: number = 1, rowsPerPage: number = 10, filter = null) {
+    async function getEmpresaPaginado(page: number = 1, rowsPerPage: number = 10) {
         try {
         loading.value = true
-        const data = await empresaService.list(filter, page - 1 , rowsPerPage);
+        const data = await empresaService.list(filter.value, page - 1 , rowsPerPage);
         empresasPaginados.value = data.content
         pagination.value.rowsNumber = data.totalElements
         } catch (error: unknown) {
@@ -84,6 +85,7 @@ export const useEmpresaStore = defineStore('empresa', () => {
     }
 
     return {
+        filter,
         empresa,
         loading,
         pagination,

@@ -37,7 +37,7 @@
                       </div>
 
                       <div class="col-md-auto col-12">
-                        <q-btn color="primary" label="Nova Cartela" @click="openDialog()" />
+                        <q-btn color="primary" label="Novo Evento" @click="openDialog()" />
                       </div>
                     </div>
                   </div>
@@ -155,7 +155,7 @@
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useEventoStore } from 'src/stores/evento.store';
-import EventoDialog from 'src/pages/evento/EventoDialog.vue';
+import EventoDialog from 'src/components/dialog/EventoDialog.vue';
 import { EventoResponse } from 'src/model/response/evento.response';
 import ButtonToggleView from 'src/components/button/ButtonToggleView.vue';
 import { EventoFilter } from 'src/model/evento.interface';

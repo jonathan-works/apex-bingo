@@ -141,7 +141,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
-import UsuarioDialog from './UsuarioDialog.vue';
+import UsuarioDialog from '../../components/dialog/UsuarioDialog.vue';
 import { useUsuarioStore } from 'src/stores/usuario.store';
 import { UsuarioFilter, UsuarioResponse } from 'src/model/usuario.interface';
 import { formatarDocumento, formatarTelefone } from 'src/utils/format';

@@ -13,9 +13,6 @@
         <q-toolbar-title>
           <Logo/>
         </q-toolbar-title>
-        <!-- <q-toolbar-title>
-          {{authStore.tipoUser === 'CAIXA' ? 'Caixa' : 'BARBEIRO'}}
-        </q-toolbar-title> -->
 
         <div v-if="true" class="flex justify-center items-center q-gutter-sm q-mx-sm">
           <q-avatar color="positive" size="1.1em" /> 
@@ -154,6 +151,11 @@ const linksList: EssentialLinkProps[] = [
     title: 'Eventos',
     icon: 'event',
     to: '/eventos'
+  },
+  {
+    title: 'Empresas',
+    icon: 'apartment',
+    to: '/empresas'
   },
 ];
 function toggleCaixa(){
