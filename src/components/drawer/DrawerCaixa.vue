@@ -15,7 +15,7 @@
               Período:
               <q-item-label>
                 <q-input
-                  v-model="dtI"
+                  v-model="caixaStore.dtI"
                   label="Data Início *"
                   type="date"
                   :rules="[val => !!val || 'Data início é obrigatória']"
@@ -23,46 +23,41 @@
                   dense
                 />
                 <q-input
-                  v-model="dtF"
+                  v-model="caixaStore.dtF"
                   label="Data Final *"
                   type="date"
                   :rules="[
                     val => !!val || 'Data final é obrigatória',
-                    val => !dtInicio || val >= dtInicio || 'Data final deve ser maior ou igual à data inicial'
+                    val => !dtI || val >= dtI || 'Data final deve ser maior ou igual à data inicial'
                   ]"
                   outlined
                   dense
                 />
-                {{caixaStore.caixa}}
-                <!-- <q-chip v-if="true === 'CONCLUIDO'"
-                color="positive" text-color="white" icon="done" size="sm">
-                  CONCLUÍDO
-                </q-chip> -->
-                <!-- <q-chip v-if="pedidoComandaStore.pedido?.status === 'ABERTO'"
-                text-color="negative" icon="schedule" size="sm">
-                  PEDIDO ABERTO
-                </q-chip>
-                <q-chip v-if="pedidoComandaStore.pedido?.status === 'FECHADO'"
-                color="warning" text-color="primary" icon="currency_exchange" size="sm">
-                  PEDIDO FECHADO
-                </q-chip>
-                <q-chip v-if="pedidoComandaStore.pedido?.status === 'CANCELADO'"
-                color="cancelado" text-color="primary" icon="close" size="sm">
-                  PEDIDO CANCELADO
-                </q-chip> -->
-                <template v-if="true">
-                  <!-- <q-chip v-if="true" color="positive" text-color="white" icon="done" size="sm">
-                    PAGO
-                  </q-chip> -->
-                  <!-- <q-chip v-else-if="pedidoComandaStore.dividaParcialmenteQuitada"
-                  color="warning" text-color="primary" icon="close" size="sm">
-                    PARCIALMENTE PAGO
-                  </q-chip> -->
-                  <!-- <q-chip v-else-if="!pedidoComandaStore.dividaQuitada"
-                  color="negative" text-color="white" icon="close" size="sm">
-                    NÃO PAGO
-                  </q-chip> -->
-                </template>
+                <q-card flat bordered >
+                  <q-card-section>
+                    <table class="full-width">
+                      <tbody>
+                        <tr v-for="row in caixaStore.caixa ? [
+                          { label: 'Dinheiro', value: formatToBRL(caixaStore.caixa.dinheiro), positivo: caixaStore.caixa.dinheiro > 0 },
+                          { label: 'Cartão de Crédito', value: formatToBRL(caixaStore.caixa.cartaoCredito), positivo: caixaStore.caixa.cartaoCredito > 0 },
+                          { label: 'Cartão de Débito', value: formatToBRL(caixaStore.caixa.cartaoDebito), positivo: caixaStore.caixa.cartaoDebito > 0 },
+                          { label: 'Pix', value: formatToBRL(caixaStore.caixa.pix), positivo: caixaStore.caixa.pix > 0 },
+                          { label: 'Total Crédito', value: formatToBRL(caixaStore.caixa.totalCredito), positivo: caixaStore.caixa.totalCredito > 0 },
+                          { label: 'Total Débito', value: formatToBRL(caixaStore.caixa.totalDebito), positivo: caixaStore.caixa.totalDebito > 0 },
+                          { label: 'Saldo', value: formatToBRL(caixaStore.caixa.saldo), positivo: caixaStore.caixa.saldo > 0 }
+                        ] : []" :key="row.label">
+                          <td>{{ row.label }}</td>
+                          <td class="text-right">{{ row.value }}</td>
+                        </tr>
+                        <tr v-if="!caixaStore.caixa">
+                          <td colspan="2" class="text-center">
+                            Caixa não disponível para o período
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </q-card-section>
+                </q-card>
               </q-item-label>
             </div>
           </q-item-label>
@@ -71,28 +66,13 @@
       <q-item>
         <q-item-section>
           <q-item-label>
-              <!-- <q-item-label>
-                Cliente:
-              </q-item-label> -->
-              <!-- <q-item-label v-if="!pedidoComandaStore.clienteSelecionado && !pedidoComandaStore.vazio">
-                <q-btn flat icon="add" class="full-width" color="accent" label="Selecionar Cliente" @click="pedidoComandaStore.openDialogSelecaoCliente" />
-              </q-item-label>
-              <q-item-label v-else-if="!pedidoComandaStore.vazio">
-                <div class="text-bold text-subtitle1">{{ (pedidoComandaStore.clienteSelecionado as Cliente)?.pessoa?.nome || pedidoComandaStore.clienteSelecionado }}</div>
-              </q-item-label> -->
-          </q-item-label>
-        </q-item-section>
-      </q-item>
-      <q-item>
-        <q-item-section>
-          <q-item-label>
-            <!-- <q-item-label>
-              Carrinho:
-            </q-item-label> -->
+            <q-btn class="full-width" color="primary" label="Lançar valor" @click="lancarValor"/>
+
           </q-item-label>
         </q-item-section>
       </q-item>
     </q-list>
+    <LancarNoCaixaDialog v-model="showDialogLancarNoCaixa"></LancarNoCaixaDialog>
   </q-drawer>
 </template>
 
@@ -107,27 +87,15 @@ import { useAuthStore } from 'src/stores/auth.store';
 import useNotify from 'src/composable/UseNotify';
 import { Notify, useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
+import LancarNoCaixaDialog from 'src/components/dialog/LancarNoCaixaDialog.vue'
 
 const notify = useNotify();
 const router = useRouter();
 const $q = useQuasar();
+const showDialogLancarNoCaixa = ref(false);
 
-const date = new Date();
-date.setDate(date.getDate() - 30);
-const dtI = ref<string>(date.toISOString().split('T')[0] as string);
-const dtF = ref<string>(new Date().toISOString().split('T')[0] as string);
 
-const dataInicio = computed({
-  get: () => dtI.value.split('-').reverse().join('/'),
-  set: (value) => dtI.value = value.split('/').reverse().join('-'),
-});
 
-const dataFinal = computed({
-  get: () => dtF.value.split('-').reverse().join('/'),
-  set: (value) => dtF.value = value.split('/').reverse().join('-'),
-});
-
-const authStore = useAuthStore();
 const caixaStore = useCaixaStore();
 
 const props = defineProps<{ modelValue: boolean }>();
@@ -144,9 +112,13 @@ function formatToBRL(value: number) {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 };
 
+function lancarValor(){
+  showDialogLancarNoCaixa.value = true;
+}
+
 watch(() => model.value, (open) => {
   if (open) {
-    caixaStore.getCaixa(dataInicio.value, dataFinal.value);
+    caixaStore.getCaixa();
   } 
 }, { immediate: true });
 

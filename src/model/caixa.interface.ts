@@ -31,8 +31,8 @@ export interface MovimentacaoCaixaResponse{
 }
 
 export interface LancamentoCaixaRequest{
-    valor: number;
-    tipo: TipoPagamento;
-    meioPagamento: MeioPagamento;
-    evento: EventoRequest;
+    valor: number | null;
+    tipo: TipoPagamento | null;
+    meioPagamento: MeioPagamento | null;
+    evento: EventoRequest | null;
 }
