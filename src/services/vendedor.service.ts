@@ -3,7 +3,12 @@ import { PageVendedorResponse, VendedorFilter, VendedorRequest, VendedorResponse
 
 export const vendedorService = {
   async list(filter: VendedorFilter| null = null, page = 0, size = 10, order = 'desc', coluna = 'codigo'): Promise<PageVendedorResponse> {
-    return await useApi('/api/v1/vendedores').list({ filter, page, size, order, coluna });
+    let request = { page, size, order, coluna };
+    
+    if(filter !== null) {
+      request = { ...request, ...filter };
+    }
+    return await useApi('/api/v1/vendedores').list(request);
   },
 
   async listAll(): Promise<VendedorResponse[]> {

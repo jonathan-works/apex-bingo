@@ -6,7 +6,7 @@ import { ErrorApi } from 'src/model/error.interface'
 import { RoleResponse } from 'src/model/role.interface'
 import { roleService } from 'src/services/role.service'
 import { usuarioService } from 'src/services/usuario.service'
-import { UsuarioRequest, UsuarioResponse } from 'src/model/usuario.interface'
+import { UsuarioFilter, UsuarioRequest, UsuarioResponse } from 'src/model/usuario.interface'
 
 const notify = useNotify()
 
@@ -21,11 +21,12 @@ const usuario = ref<UsuarioResponse | null>(null);
 const usuariosPaginados = ref<UsuarioResponse[]>([]);
 const loading = ref(false);
 const roles = ref<RoleResponse[]>([]);
+const filter = ref<UsuarioFilter|null>(null);
 
-async function getUsuariosPaginado(page: number = 1, rowsPerPage: number = 10, filter = null) {
+async function getUsuariosPaginado(page: number = 1, rowsPerPage: number = 10) {
     try {
     loading.value = true
-    const data = await usuarioService.list(filter, page - 1 , rowsPerPage);
+    const data = await usuarioService.list(filter.value, page - 1 , rowsPerPage);
     usuariosPaginados.value = data.content
     pagination.value.rowsNumber = data.totalElements
     } catch (error: unknown) {
@@ -103,6 +104,7 @@ async function excluirUsuario(codigo: number) {
 
 return {
   roles,
+  filter,
   usuario,
   loading,
   pagination,

@@ -4,13 +4,11 @@ import { GestaoCartelaFilter, GestaoCartelaItemResponse, GestaoCartelaRequest, G
 
 export const gestaoCartelaService = {
   async list(filter: GestaoCartelaFilter | null = null, page = 0, size = 10, order = 'desc', coluna = 'codigo'): Promise<PageGestaoCartelaResponse> {
-
     let request = { page, size, order, coluna };
     
     if(filter !== null) {
       request = { ...request, ...filter };
     }
-
     return await useApi('/api/v1/gestao-cartelas').list(request);
   },
 

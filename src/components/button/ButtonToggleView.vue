@@ -5,7 +5,6 @@
     round
     dense
     @click="toggleView"
-    class="q-ml-sm"
   >
     <q-tooltip>
       {{ isGridView ? 'Visualizar em lista' : 'Visualizar em cards' }}

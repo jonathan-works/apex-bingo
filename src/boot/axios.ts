@@ -43,9 +43,10 @@ export default boot(({ router }) => {
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
           return api(originalRequest);
         } catch (refreshError) {
-          logout();
           return Promise.reject(refreshError);
         }
+      }else if (!authStore.tokenValido() && error.response?.status === 401) {
+        logout();
       }
 
       return Promise.reject(error);

@@ -3,7 +3,12 @@ import { EventoFilter, EventoRequest, EventoResponse } from 'src/model/evento.in
 
 export const eventoService = {
   async list(filter: EventoFilter| null = null, page = 0, size = 10, order = 'desc', coluna = 'codigo'): Promise<PageEventoResponse> {
-    return await useApi('/api/v1/eventos').list({ filter, page, size, order, coluna });
+    let request = { page, size, order, coluna };
+    
+    if(filter !== null) {
+      request = { ...request, ...filter };
+    }
+    return await useApi('/api/v1/eventos').list(request);
   },
 
   async listAll(): Promise<EventoResponse[]> {

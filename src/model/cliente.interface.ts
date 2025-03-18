@@ -13,6 +13,7 @@ export interface ClienteRequest {
 
 export interface ClienteFilter {
   nome?: string;
+  documento?: string;
 }
 
 export interface PageClienteResponse extends PageResponse<ClienteResponse[]> {}

@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import useNotify from 'src/composable/UseNotify'
 import { ErrorApi } from 'src/model/error.interface'
 import { eventoService } from 'src/services/evento.service'
-import { EventoResponse } from 'src/model/evento.interface'
+import { EventoFilter, EventoResponse } from 'src/model/evento.interface'
 import { EmpresaResponse } from 'src/model/empresa.interface'
 import { empresaService } from 'src/services/empresa.service'
 
@@ -16,16 +16,17 @@ export const useEventoStore = defineStore('evento', () => {
         rowsPerPage: 10,
         rowsNumber: 0
     });
-    const evento = ref<EventoResponse | null>(null);
+    const evento = ref<EventoResponse|null>(null);
     const eventosPaginados = ref<EventoResponse[]>([]);
     const empresas = ref<EmpresaResponse[]>([]);
     const empresasFiltradas = ref<EmpresaResponse[]>([]);
     const loading = ref(false);
+    const filter = ref<EventoFilter|null>();
 
-    async function getEventosPaginado(page: number = 1, rowsPerPage: number = 10, filter = null) {
+    async function getEventosPaginado(page: number = 1, rowsPerPage: number = 10) {
         try {
         loading.value = true
-        const data = await eventoService.list(filter, page - 1 , rowsPerPage);
+        const data = await eventoService.list(filter.value, page - 1 , rowsPerPage);
         eventosPaginados.value = data.content
         pagination.value.rowsNumber = data.totalElements
         } catch (error: unknown) {
@@ -47,7 +48,6 @@ export const useEventoStore = defineStore('evento', () => {
         loading.value = false
         }
     }
-
     async function criarEvento(evento: EventoResponse) {
         try {
         loading.value = true;
@@ -62,7 +62,6 @@ export const useEventoStore = defineStore('evento', () => {
         loading.value = false;
         }
     }
-
     async function atualizarEvento(evento: EventoResponse) {
         try {
         loading.value = true;
@@ -80,7 +79,6 @@ export const useEventoStore = defineStore('evento', () => {
         loading.value = false;
         }
     }
-
     async function excluirEvento(codigo: number) {
         try {
         loading.value = true;
@@ -100,6 +98,7 @@ export const useEventoStore = defineStore('evento', () => {
     }
 
     return {
+        filter,
         evento,
         loading,
         empresas,

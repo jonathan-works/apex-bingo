@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import useNotify from 'src/composable/UseNotify'
 import { ErrorApi } from 'src/model/error.interface'
 import { EmpresaResponse } from 'src/model/empresa.interface'
-import { ClienteResponse } from 'src/model/cliente.interface'
+import { ClienteFilter, ClienteResponse } from 'src/model/cliente.interface'
 import { clienteService } from 'src/services/cliente.service'
 
 const notify = useNotify()
@@ -20,11 +20,12 @@ export const useClienteStore = defineStore('cliente', () => {
   const empresas = ref<EmpresaResponse[]>([]);
   const empresasFiltradas = ref<EmpresaResponse[]>([]);
   const loading = ref(false);
+  const filter = ref<ClienteFilter|null>(null);
 
-  async function getClientesPaginado(page: number = 1, rowsPerPage: number = 10, filter = null) {
+  async function getClientesPaginado(page: number = 1, rowsPerPage: number = 10) {
     try {
       loading.value = true
-      const data = await clienteService.list(filter, page - 1 , rowsPerPage);
+      const data = await clienteService.list(filter.value, page - 1 , rowsPerPage);
       clientesPaginados.value = data.content
       pagination.value.rowsNumber = data.totalElements
     } catch (error: unknown) {
@@ -86,6 +87,7 @@ export const useClienteStore = defineStore('cliente', () => {
   }
 
   return {
+    filter,
     cliente,
     loading,
     empresas,
@@ -98,66 +100,3 @@ export const useClienteStore = defineStore('cliente', () => {
     getClientesPaginado,
   }
 })
-
-
-
-// import { defineStore } from 'pinia'
-// import { ClienteRequest, ClienteResponse, PageClienteResponse } from 'src/interfaces/cliente.interface'
-// import { createCliente, deleteCliente, findAllClientes, findClienteById, updateCliente } from 'src/services/cliente.service'
-
-
-// export const useClienteStore = defineStore('cliente', {
-//   state: (): ClienteState => ({
-//     clientes: [],
-//     cliente: null,
-//     loading: false,
-//     totalPages: 0,
-//     totalElements: 0
-//   }),
-
-//   actions: {
-//     async fetchClientes (page: number, size: number, order: string, coluna: string, filter: any) {
-//       try {
-//         this.loading = true
-//         const response: PageClienteResponse = await findAllClientes(page, size, order, coluna, filter)
-//         this.clientes = response.content
-//         this.totalPages = response.totalPages
-//         this.totalElements = response.totalElements
-//       } finally {
-//         this.loading = false
-//       }
-//     },
-
-//     async fetchClienteById (id: number) {
-//       try {
-//         this.loading = true
-//         this.cliente = await findClienteById(id)
-//       } finally {
-//         this.loading = false
-//       }
-//     },
-
-//     async saveCliente (cliente: ClienteRequest) {
-//       try {
-//         this.loading = true
-//         if (cliente.codigo) {
-//           await updateCliente(cliente.codigo, cliente)
-//         } else {
-//           await createCliente(cliente)
-//         }
-//       } finally {
-//         this.loading = false
-//       }
-//     },
-
-//     async removeCliente (id: number) {
-//       try {
-//         this.loading = true
-//         await deleteCliente(id)
-//         this.clientes = this.clientes.filter(c => c.codigo !== id)
-//       } finally {
-//         this.loading = false
-//       }
-//     }
-//   }
-// })

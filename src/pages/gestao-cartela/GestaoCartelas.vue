@@ -10,118 +10,127 @@
                 @request="onRequest"
                 :grid="$q.screen.lt.md || isGridView"
             >
-                <template v-slot:top="props">
-                    <div class="row q-gutter-y-md full-width">
-                      <div class="col-12 row">
-                        <div class="col-2 q-table__title">Gestão de Cartelas</div>
-
-                        <q-space />
-
+              <template v-slot:top>
+                <div class="row q-gutter-y-md full-width">
+                  <div class="col-12 row">
+                    <div class="col-md-auto col-12">
+                      <div class="col-2 q-table__title">Gestão de Cartelas</div>
+                    </div>
+                    <div class="col-md col-12 row justify-end q-col-gutter-x-md">
+                      <div class="col-md-auto col-12">
                         <q-btn
                           flat
                           round
+                          dense
                           icon="filter_alt"
                           @click="toggleFilter"
                         >
                           <q-tooltip>Mais filtros</q-tooltip>
                         </q-btn>
+                      </div>
 
+                      <div class="col-md-auto col-12">
                         <ButtonToggleView
                           v-if="!$q.screen.lt.md"
                           v-model:isGrid="isGridView"
                         />
-                        <q-btn color="primary" label="Nova Gestao de Cartela" @click="openDialog()" class="q-ml-sm" />
                       </div>
-                      <div class="col-12" v-if="filterShow">
-                        <div class="row q-col-gutter-md">
-                          <div class="col-md-1 col-12">
-                            <q-input
-                              v-model="filter.numero"
-                              label="Número"
-                              type="number"
-                              outlined
-                              dense
-                              clearable
-                              @blur="onRequest"
-                              @keyup.enter="onRequest"
-                              @clear="onRequest"
-                            />
-                          </div>
-                          <div class="col-md-2 col-12">
-                            <q-input
-                              v-model="filter.nome"
-                              label="Evento"
-                              outlined
-                              dense
-                              clearable
-                              @blur="onRequest"
-                              @keyup.enter="onRequest"
-                              @clear="onRequest"
-                            />
-                          </div>
-                          <div class="col-md-2 col-12">
-                            <q-input
-                              v-model="filter.documento"
-                              label="Documento"
-                              outlined
-                              dense
-                              clearable
-                              @blur="onRequest"
-                              @keyup.enter="onRequest"
-                              @clear="onRequest"
-                            />
-                          </div>
-                          <div class="col-md-1 col-12">
-                              <q-select
-                                dense
-                                outlined
-                                emit-value
-                                map-options
-                                v-model="filter.tipo"
-                                :options="tipo"
-                                label="Tipo"
-                                clearable
-                                @update:model-value="onRequest"
-                                @keyup.enter="onRequest"
-                                @clear="onRequest"
-                            />
-                          </div>
-                          <div class="col-md-2 col-12">
-                              <q-select
-                                dense
-                                outlined
-                                emit-value
-                                map-options
-                                v-model="filter.statusCartela"
-                                :options="status"
-                                label="Status"
-                                clearable
-                                @update:model-value="onRequest"
-                                @keyup.enter="onRequest"
-                                @clear="onRequest"
-                            />
-                          </div>
-                          <div class="col-md-4 col-12">
-                              <SelectEvento
-                                label="Evento"
-                                emit-value
-                                map-options
-                                option-value="codigo"
-                                v-model:items-filtrados="gestaoCartelaStore.eventosFiltrados"
-                                v-model:items="gestaoCartelaStore.eventos"
-                                v-model="filter.codigoEvento" 
-                                clearable 
-                                @update:model-value="onRequest"
-                                @keyup.enter="onRequest"
-                                @clear="onRequest"
-                              />
-                          </div>
-                        </div>
+
+                      <div class="col-md-auto col-12">
+                        <q-btn color="primary" label="Nova Gestao de Cartela" @click="openDialog()" />
                       </div>
                     </div>
-                </template>
+                  </div>
+                  <div class="col-12" v-if="filterShow">
+                    <div class="row q-col-gutter-md">
+                      <div class="col-md-1 col-12">
+                        <q-input
+                          v-model="filter.numero"
+                          label="Número"
+                          type="number"
+                          outlined
+                          dense
+                          clearable
+                          @blur="onRequest"
+                          @keyup.enter="onRequest"
+                          @clear="onRequest"
+                        />
+                      </div>
+                      <div class="col-md-2 col-12">
+                        <q-input
+                          v-model="filter.nome"
+                          label="Evento"
+                          outlined
+                          dense
+                          clearable
+                          @blur="onRequest"
+                          @keyup.enter="onRequest"
+                          @clear="onRequest"
+                        />
+                      </div>
+                      <div class="col-md-2 col-12">
+                        <q-input
+                          v-model="filter.documento"
+                          label="Documento"
+                          outlined
+                          dense
+                          clearable
+                          @blur="onRequest"
+                          @keyup.enter="onRequest"
+                          @clear="onRequest"
+                        />
+                      </div>
+                      <div class="col-md-1 col-12">
+                          <q-select
+                            dense
+                            outlined
+                            emit-value
+                            map-options
+                            v-model="filter.tipo"
+                            :options="tipo"
+                            label="Tipo"
+                            clearable
+                            @update:model-value="onRequest"
+                            @keyup.enter="onRequest"
+                            @clear="onRequest"
+                        />
+                      </div>
+                      <div class="col-md-2 col-12">
+                          <q-select
+                            dense
+                            outlined
+                            emit-value
+                            map-options
+                            v-model="filter.statusCartela"
+                            :options="status"
+                            label="Status"
+                            clearable
+                            @update:model-value="onRequest"
+                            @keyup.enter="onRequest"
+                            @clear="onRequest"
+                        />
+                      </div>
+                      <div class="col-md-4 col-12">
+                          <SelectEvento
+                            label="Evento"
+                            emit-value
+                            map-options
+                            option-value="codigo"
+                            v-model:items-filtrados="gestaoCartelaStore.eventosFiltrados"
+                            v-model:items="gestaoCartelaStore.eventos"
+                            v-model="filter.codigoEvento" 
+                            clearable 
+                            @update:model-value="onRequest"
+                            @keyup.enter="onRequest"
+                            @clear="onRequest"
+                          />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
 
-                <template v-slot:item="props">
+              <template v-slot:item="props">
                 <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4" v-if="$q.screen.lt.md || isGridView">
                     <q-card>
                     <q-card-section>
@@ -153,39 +162,39 @@
                     </q-card-actions>
                     </q-card>
                 </div>
-                </template>
+              </template>
 
-                <template v-slot:body-cell-actions="props">
-                  <q-td :props="props" class="q-gutter-sm">
+              <template v-slot:body-cell-actions="props">
+                <q-td :props="props" class="q-gutter-sm">
+                  <q-btn
+                    flat
+                    round
+                    color="primary"
+                    icon="preview"
+                    @click="visualizar(props.row)"
+                  >
+                    <q-tooltip>Visualizar</q-tooltip>
+                  </q-btn>
+                    <!-- <q-btn
+                    flat
+                    round
+                    color="primary"
+                    icon="edit"
+                    @click="editar(props.row)"
+                    >
+                    <q-tooltip>Editar</q-tooltip>
+                    </q-btn> -->
                     <q-btn
                       flat
                       round
-                      color="primary"
-                      icon="preview"
-                      @click="visualizar(props.row)"
+                      color="negative"
+                      icon="delete"
+                      @click="confirmarExclusao(props.row)"
                     >
-                      <q-tooltip>Visualizar</q-tooltip>
+                      <q-tooltip>Excluir</q-tooltip>
                     </q-btn>
-                      <!-- <q-btn
-                      flat
-                      round
-                      color="primary"
-                      icon="edit"
-                      @click="editar(props.row)"
-                      >
-                      <q-tooltip>Editar</q-tooltip>
-                      </q-btn> -->
-                      <q-btn
-                        flat
-                        round
-                        color="negative"
-                        icon="delete"
-                        @click="confirmarExclusao(props.row)"
-                      >
-                        <q-tooltip>Excluir</q-tooltip>
-                      </q-btn>
-                  </q-td>
-                </template>
+                </q-td>
+              </template>
             </q-table>
         </div>
         <GestaoCartelasCreatEditDialog

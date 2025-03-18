@@ -1,9 +1,14 @@
 import useApi from 'src/composable/UseApi';
-import { UsuarioFilter, UsuarioRequest, UsuarioResponse } from 'src/model/usuario.interface';
+import { PageUsuarioResponse, UsuarioFilter, UsuarioRequest, UsuarioResponse } from 'src/model/usuario.interface';
 
 export const usuarioService = {
-  async list(filter: UsuarioFilter| null = null, page = 0, size = 10, order = 'desc', coluna = 'codigo'): Promise<PageEventoResponse> {
-    return await useApi('/api/v1/usuarios').list({ filter, page, size, order, coluna });
+  async list(filter: UsuarioFilter| null = null, page = 0, size = 10, order = 'desc', coluna = 'codigo'): Promise<PageUsuarioResponse> {
+    let request = { page, size, order, coluna };
+    
+    if(filter !== null) {
+      request = { ...request, ...filter };
+    }
+    return await useApi('/api/v1/usuarios').list(request);
   },
 
   async create(request: UsuarioRequest): Promise<UsuarioResponse> {

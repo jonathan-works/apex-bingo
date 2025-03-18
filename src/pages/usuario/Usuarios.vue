@@ -2,7 +2,6 @@
     <q-page padding>
         <div class="q-pa-md">
             <q-table
-                title="Usuarios"
                 :rows="usuarioStore.usuariosPaginados"
                 :columns="columns"
                 row-key="codigo"
@@ -11,17 +10,69 @@
                 @request="onRequest"
                 :grid="$q.screen.lt.md || isGridView"
             >
-                <template v-slot:top-right>
-                  <div class="row items-center">
-                      <ButtonToggleView
-                      v-if="!$q.screen.lt.md"
-                      v-model:isGrid="isGridView"
-                      />
-                      <q-btn color="primary" label="Novo usuario" @click="openDialog()" class="q-ml-sm" />
+              <template v-slot:top>
+                <div class="row q-gutter-y-md full-width">
+                  <div class="col-12 row">
+                    <div class="col-md-4 col-12">
+                      <div class="col-2 q-table__title">Usuarios</div>
+                    </div>
+                    <div class="col-md col-12 row justify-end q-col-gutter-x-md">
+                      <div class="col-md-auto col-12">
+                        <q-btn
+                          flat
+                          round
+                          dense
+                          icon="filter_alt"
+                          @click="toggleFilter"
+                        >
+                          <q-tooltip>Mais filtros</q-tooltip>
+                        </q-btn>
+                      </div>
+
+                      <div class="col-md-auto col-12">
+                        <ButtonToggleView
+                          v-if="!$q.screen.lt.md"
+                          v-model:isGrid="isGridView"
+                        />
+                      </div>
+
+                      <div class="col-md-auto col-12">
+                        <q-btn color="primary" label="Nova Cartela" @click="openDialog()" />
+                      </div>
+                    </div>
                   </div>
-                </template>
+                  <div class="col-12" v-if="filterShow">
+                    <div class="row q-col-gutter-md">
+                      <div class="col-md-2 col-12">
+                        <q-input
+                          v-model="filter.nome"
+                          label="Nome"
+                          outlined
+                          dense
+                          clearable
+                          @blur="onRequest"
+                          @keyup.enter="onRequest"
+                          @clear="onRequest"
+                        />
+                      </div>
+                      <div class="col-md-2 col-12">
+                        <q-input
+                          v-model="filter.documento"
+                          label="Documento"
+                          outlined
+                          dense
+                          clearable
+                          @blur="onRequest"
+                          @keyup.enter="onRequest"
+                          @clear="onRequest"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
   
-                <template v-slot:item="props">
+              <template v-slot:item="props">
                 <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4" v-if="$q.screen.lt.md || isGridView">
                     <q-card>
                     <q-card-section>
@@ -54,9 +105,9 @@
                     </q-card-actions>
                     </q-card>
                 </div>
-                </template>
+              </template>
   
-                <template v-slot:body-cell-actions="props">
+              <template v-slot:body-cell-actions="props">
                 <q-td :props="props" class="q-gutter-sm">
                     <q-btn
                     flat
@@ -77,7 +128,7 @@
                     <q-tooltip>Excluir</q-tooltip>
                     </q-btn>
                 </q-td>
-                </template>
+              </template>
             </q-table>
         </div>
         <UsuarioDialog
@@ -92,94 +143,103 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import UsuarioDialog from './UsuarioDialog.vue';
 import { useUsuarioStore } from 'src/stores/usuario.store';
-import { UsuarioResponse } from 'src/model/usuario.interface';
+import { UsuarioFilter, UsuarioResponse } from 'src/model/usuario.interface';
 import { formatarDocumento, formatarTelefone } from 'src/utils/format';
 import ButtonToggleView from 'src/components/button/ButtonToggleView.vue';
   
-  const $q = useQuasar();
-  const usuarioStore = useUsuarioStore();
-  usuarioStore.getUsuariosPaginado();
-  
-  const isGridView = ref(false);
-  const showDialog = ref(false);
-  const filter = ref(null);
-  
-  const columns = [
-      {
-        name: 'codigo',
-        field: 'codigo',
-        label: 'Código',
-        align: 'left',
-        sortable: true
-      },
-      {
-        name: 'nome',
-        field: (row : UsuarioResponse) => row.pessoa.nome,
-        label: 'Nome',
-        align: 'left',
-        sortable: true
-      },
-      {
-        name: 'documento',
-        field: (row : UsuarioResponse) => formatarDocumento(row.pessoa.documento),
-        label: 'Documento',
-        align: 'left'
-      },
-      {
-        name: 'email',
-        field: (row : UsuarioResponse) => row.pessoa.email,
-        label: 'Email',
-        align: 'left'
-      },
-      {
-        name: 'telefone',
-        field: (row : UsuarioResponse) => formatarTelefone(row.pessoa.telefone),
-        label: 'Telefone',
-        align: 'left'
-      },
-      {
-        name: 'actions',
-        label: 'Ações',
-        field: 'actions',
-        align: 'center'
-      }
-    ]
-  
-  async function onRequest(props: any) {
-    usuarioStore.pagination = props.pagination;
-    await usuarioStore.getUsuariosPaginado();
+const $q = useQuasar();
+const usuarioStore = useUsuarioStore();
+usuarioStore.getUsuariosPaginado();
+
+const isGridView = ref(false);
+const showDialog = ref(false);
+const filter = ref<UsuarioFilter>({});
+const filterShow = ref(false);
+
+const columns = [
+  {
+    name: 'codigo',
+    field: 'codigo',
+    label: 'Código',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'nome',
+    field: (row : UsuarioResponse) => row.pessoa.nome,
+    label: 'Nome',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'documento',
+    field: (row : UsuarioResponse) => formatarDocumento(row.pessoa.documento),
+    label: 'Documento',
+    align: 'left'
+  },
+  {
+    name: 'email',
+    field: (row : UsuarioResponse) => row.pessoa.email,
+    label: 'Email',
+    align: 'left'
+  },
+  {
+    name: 'telefone',
+    field: (row : UsuarioResponse) => formatarTelefone(row.pessoa.telefone),
+    label: 'Telefone',
+    align: 'left'
+  },
+  {
+    name: 'actions',
+    label: 'Ações',
+    field: 'actions',
+    align: 'center'
   }
-  
-  function openDialog(usuario?: UsuarioResponse) {
-    usuarioStore.usuario = usuario ? { ...usuario } : null;
-    showDialog.value = true;
+]
+
+async function onRequest(props: any) {
+  if(props?.pagination){
+    usuarioStore.pagination = props.pagination
   }
-  
-  function editar(usuario: UsuarioResponse) {
-    openDialog(usuario);
+  if(Object.keys(filter.value).length > 0){
+    usuarioStore.filter = filter.value as UsuarioFilter;
   }
-  
-  function confirmarExclusao(usuario: UsuarioResponse) {
-    $q.dialog({
-      title: 'Confirmar exclusão',
-      message: `Deseja realmente excluir o usuario ${usuario?.pessoa?.nome}?`,
-      cancel: {
-        label: 'Cancelar',
-        flat: true,
-        color: 'primary'
-      },
-      ok: {
-        label: 'Excluir',
-        color: 'negative'
-      },
-      persistent: true
-    }).onOk(async () => {
-      try {
-        await usuarioStore.excluirUsuario(usuario.codigo);
-        await usuarioStore.getUsuariosPaginado(usuarioStore.pagination.page, usuarioStore.pagination.rowsPerPage, filter.value);
-      } catch (error) {
-      }
-    });
-  }
-  </script>
+  await usuarioStore.getUsuariosPaginado();
+}
+
+function openDialog(usuario?: UsuarioResponse) {
+  usuarioStore.usuario = usuario ? { ...usuario } : null;
+  showDialog.value = true;
+}
+
+function editar(usuario: UsuarioResponse) {
+  openDialog(usuario);
+}
+
+function confirmarExclusao(usuario: UsuarioResponse) {
+  $q.dialog({
+    title: 'Confirmar exclusão',
+    message: `Deseja realmente excluir o usuario ${usuario?.pessoa?.nome}?`,
+    cancel: {
+      label: 'Cancelar',
+      flat: true,
+      color: 'primary'
+    },
+    ok: {
+      label: 'Excluir',
+      color: 'negative'
+    },
+    persistent: true
+  }).onOk(async () => {
+    try {
+      await usuarioStore.excluirUsuario(usuario.codigo);
+      await usuarioStore.getUsuariosPaginado(usuarioStore.pagination.page, usuarioStore.pagination.rowsPerPage);
+    } catch (error) {
+    }
+  });
+}
+function toggleFilter(){
+  filterShow.value = !filterShow.value;
+}
+</script>
     

@@ -3,7 +3,12 @@ import { EmpresaFilter, EmpresaRequest, EmpresaResponse, PageEmpresaResponse } f
 
 export const empresaService = {
   async list(filter: EmpresaFilter | null = null, page = 0, size = 10, order = 'desc', coluna = 'codigo'): Promise<PageEmpresaResponse> {
-    return await useApi('/api/v1/empresas').list({ filter, page, size, order, coluna });
+    let request = { page, size, order, coluna };
+    
+    if(filter !== null) {
+      request = { ...request, ...filter };
+    }
+    return await useApi('/api/v1/empresas').list(request);
   },
 
   async listAll(): Promise<EmpresaResponse[]> {

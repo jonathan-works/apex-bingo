@@ -3,7 +3,12 @@ import { ClienteFilter, ClienteRequest, ClienteResponse, PageClienteResponse } f
 
 export const clienteService = {
   async list(filter: ClienteFilter| null = null, page = 0, size = 10, order = 'desc', coluna = 'codigo'): Promise<PageClienteResponse> {
-    return await useApi('/api/v1/clientes').list({ filter, page, size, order, coluna });
+    let request = { page, size, order, coluna };
+    
+    if(filter !== null) {
+      request = { ...request, ...filter };
+    }
+    return await useApi('/api/v1/clientes').list(request);
   },
 
   async create(request: ClienteRequest): Promise<ClienteResponse> {

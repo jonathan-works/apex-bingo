@@ -8,8 +8,17 @@
             :columns="columns"
             row-key="codigo"
             dense
+            :filter="filter"
             v-bind="$attrs"
         >
+        
+            <template v-slot:top-right>
+                <q-input outlined dense clearable debounce="300" v-model="filter" placeholder="Pesquisar">
+                    <template v-slot:append>
+                        <q-icon name="search" />
+                    </template>
+                </q-input>
+            </template>
             <template v-slot:body-cell-actions="props">
                 <q-td :props="props">
                     <q-btn
@@ -71,6 +80,7 @@ const showDialogReceberCartela = ref(false);
 const showDialogInformarSorteada = ref(false);
 const showDialogInformarGanhadora = ref(false);
 const showDialogDevolverCartela = ref(false);
+const filter = ref('');
 
 const columns: QTableColumn[] = [
     { name: 'numeroBloco', required: true, label: 'N. Bloco', align: 'left', field: 'numeroBloco', sortable: false },

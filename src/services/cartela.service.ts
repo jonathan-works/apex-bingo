@@ -1,10 +1,15 @@
 import useApi from 'src/composable/UseApi';
-import { CartelaFilter, CartelaRequest, CartelaResponse } from 'src/model/cartela.interface';
+import { CartelaFilter, CartelaRequest, CartelaResponse, PageCartelaResponse } from 'src/model/cartela.interface';
 import { UploadRequest, UploadResponse } from 'src/model/upload.interface';
 
 export const cartelaService = {
-  async list(filter: CartelaFilter | null = null, page = 0, size = 10, order = 'desc', coluna = 'codigo'): Promise<PageGestaoRifaResponse> {
-    return await useApi('/api/v1/cartelas').list({ filter, page, size, order, coluna });
+  async list(filter: CartelaFilter | null = null, page = 0, size = 10, order = 'desc', coluna = 'codigo'): Promise<PageCartelaResponse> {
+    let request = { page, size, order, coluna };
+    
+    if(filter !== null) {
+      request = { ...request, ...filter };
+    }
+    return await useApi('/api/v1/cartelas').list(request);
   },
 
   async listAll(): Promise<CartelaResponse[]> {

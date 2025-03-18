@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import useNotify from 'src/composable/UseNotify'
 import { ErrorApi } from 'src/model/error.interface'
 import { vendedorService } from 'src/services/vendedor.service'
-import { VendedorRequest, VendedorResponse } from 'src/model/vendedor.interface'
+import { VendedorFilter, VendedorRequest, VendedorResponse } from 'src/model/vendedor.interface'
 
 const notify = useNotify()
 
@@ -17,11 +17,12 @@ export const useVendedorStore = defineStore('vendedor', () => {
   const vendedor = ref<VendedorResponse | null>(null);
   const vendedorPaginados = ref<VendedorResponse[]>([]);
   const loading = ref(false);
+  const filter = ref<VendedorFilter|null>(null);
 
-  async function getVendedoresPaginado(page: number = 1, rowsPerPage: number = 10, filter = null) {
+  async function getVendedoresPaginado(page: number = 1, rowsPerPage: number = 10) {
     try {
       loading.value = true
-      const data = await vendedorService.list(filter, page - 1 , rowsPerPage);
+      const data = await vendedorService.list(filter.value, page - 1 , rowsPerPage);
       vendedorPaginados.value = data.content
       pagination.value.rowsNumber = data.totalElements
     } catch (error: unknown) {
@@ -83,6 +84,7 @@ export const useVendedorStore = defineStore('vendedor', () => {
   }
 
   return {
+    filter,
     loading,
     vendedor,
     pagination,
