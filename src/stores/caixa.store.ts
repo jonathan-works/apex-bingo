@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import useNotify from 'src/composable/UseNotify'
 import { ErrorApi } from 'src/model/error.interface'
 import { CaixaFilter, DadosCaixaResponse, LancamentoCaixaRequest } from 'src/model/caixa.interface'
-import { caixaService } from 'src/services/caixar.service'
+import { caixaService } from 'src/services/caixa.service'
 
 const notify = useNotify()
 
