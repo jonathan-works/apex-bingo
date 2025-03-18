@@ -52,6 +52,8 @@
       </q-toolbar>
     </q-header>
 
+    <DrawerCaixa v-model="showDrawerCaixa"></DrawerCaixa>
+
     <q-drawer
       v-model="leftDrawerOpen"
       bordered
@@ -71,6 +73,11 @@
 
     <q-page-container>
       <router-view />
+      <q-page-sticky position="bottom-right" :offset="[18, 18]">
+        <q-btn fab icon="point_of_sale" color="accent" @click="toggleCaixa" >
+          <q-tooltip>Caixa</q-tooltip>
+        </q-btn>
+      </q-page-sticky>
     </q-page-container>
   </q-layout>
 </template>
@@ -82,6 +89,7 @@ import { useRouter } from 'vue-router';
 import Logo from 'src/components/Logo.vue';
 import { useAuthStore } from 'stores/auth.store';
 import EssentialLink, { type EssentialLinkProps } from 'components/EssentialLink.vue';
+import DrawerCaixa from 'src/components/drawer/DrawerCaixa.vue'
 
 const $q = useQuasar();
 
@@ -89,6 +97,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 const leftDrawerOpen = ref(false);
 const miniState = ref(true);
+const showDrawerCaixa = ref(false);
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
@@ -147,4 +156,7 @@ const linksList: EssentialLinkProps[] = [
     to: '/eventos'
   },
 ];
+function toggleCaixa(){
+  showDrawerCaixa.value = !showDrawerCaixa.value;
+}
 </script>
