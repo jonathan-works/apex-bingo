@@ -83,13 +83,13 @@ const showDialogDevolverCartela = ref(false);
 const filter = ref('');
 
 const columns: QTableColumn[] = [
-    { name: 'numeroBloco', required: true, label: 'N. Bloco', align: 'left', field: 'numeroBloco', sortable: false },
-    { name: 'cartelaRifa', required: true, label: 'Num.', align: 'left', field: (row: GestaoCartelaItemResponse) => row.cartelaRifa?.numero, sortable: false },
-    { name: 'cartelaRifa', required: true, label: 'Valor', align: 'left', field: (row: GestaoCartelaItemResponse) => formatarParaReal(row.cartelaRifa?.valor as number), sortable: false },
-    { name: 'cartelaRifa', required: true, label: 'Dt. Início', align: 'left', field: (row: GestaoCartelaItemResponse) => row.cartelaRifa?.evento.dataInicio, sortable: false },
-    { name: 'cartelaRifa', required: true, label: 'Dt. Fim', align: 'left', field: (row: GestaoCartelaItemResponse) => row.cartelaRifa?.evento.dataFinal, sortable: false },
-    { name: 'tipo', required: true, label: 'Tipo', align: 'left', field: (row: GestaoCartelaItemResponse) => Tipo[row.tipo as keyof typeof Tipo], sortable: false },
-    { name: 'status', label: 'Status', align: 'center', field: (row: GestaoCartelaItemResponse) => StatusCartela[row.cartelaRifa?.status as keyof typeof StatusCartela], sortable: false },
+    { name: 'numeroBloco', required: true, label: 'N. Bloco', align: 'left', field: 'numeroBloco', sortable: true },
+    { name: 'cartelaRifa', required: true, label: 'Num.', align: 'left', field: (row: GestaoCartelaItemResponse) => row.cartelaRifa?.numero, sortable: true },
+    { name: 'cartelaRifa', required: true, label: 'Valor', align: 'left', field: (row: GestaoCartelaItemResponse) => formatarParaReal(row.cartelaRifa?.valor as number), sortable: true },
+    { name: 'cartelaRifa', required: true, label: 'Dt. Início', align: 'left', field: (row: GestaoCartelaItemResponse) => row.cartelaRifa?.evento.dataInicio, sortable: true },
+    { name: 'cartelaRifa', required: true, label: 'Dt. Fim', align: 'left', field: (row: GestaoCartelaItemResponse) => row.cartelaRifa?.evento.dataFinal, sortable: true },
+    { name: 'tipo', required: true, label: 'Tipo', align: 'left', field: (row: GestaoCartelaItemResponse) => Tipo[row.tipo as keyof typeof Tipo], sortable: true },
+    { name: 'status', label: 'Status', align: 'center', field: (row: GestaoCartelaItemResponse) => StatusCartela[row.cartelaRifa?.status as keyof typeof StatusCartela], sortable: true },
     { name: 'actions', label: 'Ações', field: 'actions', sortable: false }
 ];
 
