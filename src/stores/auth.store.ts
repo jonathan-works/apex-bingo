@@ -15,7 +15,7 @@ export const useAuthStore = defineStore('auth', {
     authTokenGestor: null as AuthTokenGestor | null,
     clienteConfigGestor: null as ClienteConfigGestor | null,
     isRefreshing: false,
-    refreshSubscribers: [] as Array<(token: string) => void>
+    refreshSubscribers: [] as Array<(authToken: AuthToken) => void>
   }),
 
   getters: {
@@ -62,10 +62,14 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     tokenValido(){
-      const token = useAuthStore().token;
-      const decoded = jwtDecode(token as string);
-      const currentTime = Date.now() / 1000;
-      return decoded.exp && decoded.exp > currentTime
+      try {
+        const token = useAuthStore().token;
+        const decoded = jwtDecode(token as string);
+        const currentTime = Date.now() / 1000;
+        return decoded.exp && decoded.exp > currentTime
+      } catch (error) {
+        return false
+      }
     },
 
     async login(username: string, password: string, codigoCliente: string) {
@@ -139,11 +143,11 @@ export const useAuthStore = defineStore('auth', {
       sessionStorage.removeItem(CLIENT_CONFIG_KEY);
     },
 
-    async refreshToken() {
+    async refreshToken(): Promise<AuthToken> {
       if (this.isRefreshing) {
         return new Promise((resolve) => {
-          this.refreshSubscribers.push((token: string) => {
-            resolve(token);
+          this.refreshSubscribers.push((authToken: AuthToken) => {
+            resolve(authToken);
           });
         });
       }
@@ -156,13 +160,13 @@ export const useAuthStore = defineStore('auth', {
           throw new Error('No refresh token available');
         }
 
-        const response = await authService.refreshToken(storedToken.token);
+        const response = await authService.refreshToken(storedToken.refreshToken);
         this.setAuthToken(response);
 
-        this.refreshSubscribers.forEach(callback => callback(response.token));
+        this.refreshSubscribers.forEach(callback => callback(response));
         this.refreshSubscribers = [];
 
-        return response.token;
+        return response;
       } catch (error) {
         this.logout();
         throw error;
@@ -171,7 +175,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    onRefreshToken(callback: (token: string) => void) {
+    onRefreshToken(callback: (authToken: AuthToken) => void) {
       this.refreshSubscribers.push(callback);
     },
 
