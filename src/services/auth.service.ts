@@ -1,7 +1,7 @@
 import useApi from "src/composable/UseApi";
 import axios, { AxiosResponse } from "axios";
 import { ClienteConfigGestor } from "src/model/cliente-config.interface";
-import { AuthToken, AuthTokenGestor } from "src/model/auth-token.interface";
+import { AuthResponse, AuthToken, AuthTokenGestor } from "src/model/auth-token.interface";
 
 export const authService = {
     async loginGestor(username: string, password: string): Promise<AxiosResponse<AuthTokenGestor>> {
@@ -28,7 +28,7 @@ export const authService = {
         }
       });
     },
-    async refreshToken(refreshToken: string): Promise<AuthToken> {
+    async refreshToken(refreshToken: string): Promise<AuthResponse> {
       return await useApi('/refresh').post(null, {
         params: {
           refresh_token: refreshToken

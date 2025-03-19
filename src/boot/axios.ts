@@ -35,22 +35,20 @@ export default boot(({ router }) => {
         router.push('/login');
       }
 
-      if ((!authStore.tokenValido() || error.response?.status === 401) && !originalRequest._retry) {
+      if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
-
+      
         try {
           const newAuthToken = await authStore.refreshToken();
-          authStore.setAuthToken(newAuthToken);
+          
           originalRequest.headers.Authorization = `Bearer ${newAuthToken.token}`;
           return api(originalRequest);
         } catch (refreshError) {
-          logout();
+          //logout(); // Apenas desloga se a renovação falhar
           return Promise.reject(refreshError);
         }
-      } else {
-        logout();
       }
-
+      
       return Promise.reject(error);
     }
   );

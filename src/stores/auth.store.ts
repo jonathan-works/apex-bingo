@@ -4,7 +4,7 @@ import { jwtDecode} from "jwt-decode";
 import { authService } from 'src/services/auth.service';
 import { cryptoService } from 'src/services/crypto.service';
 import { ClienteConfigGestor } from 'src/model/cliente-config.interface';
-import { AuthToken, AuthTokenGestor } from 'src/model/auth-token.interface';
+import { AuthResponse, AuthToken, AuthTokenGestor } from 'src/model/auth-token.interface';
 
 const AUTH_TOKEN_KEY = 'auth_token';
 const CLIENT_CONFIG_KEY = 'client_config';
@@ -15,7 +15,7 @@ export const useAuthStore = defineStore('auth', {
     authTokenGestor: null as AuthTokenGestor | null,
     clienteConfigGestor: null as ClienteConfigGestor | null,
     isRefreshing: false,
-    refreshSubscribers: [] as Array<(authToken: AuthToken) => void>
+    refreshSubscribers: [] as Array<(authToken: AuthResponse) => void>
   }),
 
   getters: {
@@ -143,11 +143,11 @@ export const useAuthStore = defineStore('auth', {
       sessionStorage.removeItem(CLIENT_CONFIG_KEY);
     },
 
-    async refreshToken(): Promise<AuthToken> {
+    async refreshToken(): Promise<AuthResponse> {
       if (this.isRefreshing) {
         return new Promise((resolve) => {
-          this.refreshSubscribers.push((authToken: AuthToken) => {
-            resolve(authToken);
+          this.refreshSubscribers.push((authResponse: AuthResponse) => {
+            resolve(authResponse);
           });
         });
       }
@@ -155,18 +155,26 @@ export const useAuthStore = defineStore('auth', {
       this.isRefreshing = true;
 
       try {
-        const storedToken = this.getStoredAuthToken();
-        if (!storedToken?.token) {
+        const storedAuthToken: AuthToken | null = this.getStoredAuthToken();
+        if (!storedAuthToken?.token) {
           throw new Error('No refresh token available');
         }
 
-        const response = await authService.refreshToken(storedToken.refreshToken);
-        this.setAuthToken(response);
+        const authResponse: AuthResponse = await authService.refreshToken(storedAuthToken.refreshToken);
 
-        this.refreshSubscribers.forEach(callback => callback(response));
+        const newAuthToken = {
+          ...storedAuthToken
+        } as AuthToken;
+
+        newAuthToken.token = authResponse.access_token;
+        newAuthToken.refreshToken = authResponse.refresh_token;
+
+        this.setAuthToken(newAuthToken);
+
+        this.refreshSubscribers.forEach(callback => callback(authResponse));
         this.refreshSubscribers = [];
 
-        return response;
+        return authResponse;
       } catch (error) {
         this.logout();
         throw error;
@@ -175,7 +183,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    onRefreshToken(callback: (authToken: AuthToken) => void) {
+    onRefreshToken(callback: (authToken: AuthResponse) => void) {
       this.refreshSubscribers.push(callback);
     },
 
